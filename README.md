@@ -32,11 +32,20 @@
 
 wasd
 
-## 下载
+## 运行
 
-### 运行
+	### 网页版
 
-​	下载代码中的build文件，解压后双击`cangmeng.exe`运行即可
+http://resetseer.onestyle.top/
+
+网页版加载特别慢，推荐使用本地版
+
+### 本地版
+
+* 下载代码中的`pixelWindDragonGame.zip`文件，解压后双击`cangmeng.exe`运行即可
+* 百度网盘分享
+  * 链接：https://pan.baidu.com/s/1GL9Onbat3DqYOqWYsSYn_g?pwd=7piz 
+    提取码：7piz
 
 ### 退出游戏
 
