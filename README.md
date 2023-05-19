@@ -10,23 +10,23 @@
 
 ## npc
 
-![image-20230519112445603](.\imgreadme\image-20230519112445603.png)
+![image-20230519112445603](./imgreadme/image-20230519112445603.png)
 
 ### 旱魃图
 
-![image-20230519112609406](.\imgreadme\image-20230519112609406.png)
+![image-20230519112609406](./imgreadme/image-20230519112609406.png)
 
 ### 冰雪地形
 
-![image-20230519112650733](.\imgreadme\image-20230519112650733.png)
+![image-20230519112650733](./imgreadme/image-20230519112650733.png)
 
 ### 岩浆地形
 
-![image-20230519112725292](.\imgreadme\image-20230519112725292.png)
+![image-20230519112725292](./imgreadme/image-20230519112725292.png)
 
 ### 小溪
 
-![image-20230519112830533](.\imgreadme\image-20230519112830533.png)
+![image-20230519112830533](./imgreadme/image-20230519112830533.png)
 
 ## 操作
 
