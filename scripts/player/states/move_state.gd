@@ -1,8 +1,12 @@
 extends State
-## 移动：有输入时按 walk_speed 位移。
+## 移动：按 walk/run 速度位移，并播放对应方向的动画。
 ##
-## 双击加速（sprint_multiplier / sprint_window）留到 Phase 1，
-## 数值已经在 PlayerStatsData 里备好，这里先不实现。
+## 加速不单独开状态：双击同方向只是把速度与动画名从 walk_ 换成 run_，
+## 移动逻辑完全相同，用 player.is_sprinting 区分即可。
+
+
+func enter() -> void:
+	_apply_movement()
 
 
 func physics_update(_delta: float) -> void:
@@ -11,4 +15,9 @@ func physics_update(_delta: float) -> void:
 		player.velocity = Vector2.ZERO
 		state_machine.change_state(&"IdleState")
 		return
-	player.velocity = player.input_vector * player.stats.walk_speed
+	_apply_movement()
+
+
+func _apply_movement() -> void:
+	player.velocity = player.input_vector * player.current_speed()
+	player.play_animation("run" if player.is_sprinting else "walk")

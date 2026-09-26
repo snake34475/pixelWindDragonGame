@@ -1,5 +1,10 @@
 extends State
-## 待机：没有输入时保持静止。
+## 待机：没有输入时保持静止，播 idle_xxx。
+
+
+func enter() -> void:
+	player.velocity = Vector2.ZERO
+	player.play_animation("idle")
 
 
 func physics_update(_delta: float) -> void:

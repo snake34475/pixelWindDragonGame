@@ -5,8 +5,8 @@
 [resource]
 script = ExtResource("1_stats")
 walk_speed = 60.0
-sprint_multiplier = 2.0
-sprint_window = 0.5
+run_speed = 120.0
+double_tap_window = 0.5
 hook_speed = 400.0
 hook_range = 320.0
 body_size = Vector2(24, 32)

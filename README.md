@@ -64,7 +64,7 @@ scripts/
 └── systems/                game_manager.gd（Autoload）
 
 resources/
-├── characters/             player_stats.tres
+├── characters/             player_stats.tres、player_sprite_frames.tres
 └── world/                  （待后续 Phase）
 ```
 
@@ -105,6 +105,57 @@ resources/
 
 Phase 0 刻意只保留最小接口，玩法逻辑不放进全局单例。
 
+### Player 结构与动画（Phase 1）
+
+```
+Player (CharacterBody2D)
+├── AnimatedSprite2D        # SpriteFrames = player_sprite_frames.tres
+├── CollisionShape2D
+├── Camera2D
+└── StateMachine
+    ├── IdleState
+    └── MoveState
+```
+
+动画名（用 `AnimatedSprite2D.play(name)` 按名播放，不引入 AnimationTree）：
+
+```
+idle_down / idle_up / idle_side
+walk_down / walk_up / walk_side
+run_down  / run_up  / run_side
+```
+
+左右不做两套动画，靠 `AnimatedSprite2D.flip_h` 翻转。
+
+> ⚠️ **当前 9 个动画都是占位**：真实帧还没从 PSB 导出，`player_sprite_frames.tres`
+> 里 `idle_*` 用 `人物出钩.png`、`walk_*` / `run_*` 用 `人物冲.png` 各一帧顶替。
+> 拿到真实 sprite sheet 后**只需替换这个 `.tres`**，Player 与状态机代码不用改。
+
+朝向由 `player.gd` 收敛为上下左右四者之一（斜向按主导轴判定），状态机只读
+`player.facing`，不自己猜方向。
+
+移动参数集中在 `resources/characters/player_stats.tres`：
+
+| 参数 | 值 | 说明 |
+| --- | --- | --- |
+| `walk_speed` | 60 px/s | 普通移动 |
+| `run_speed` | 120 px/s | 双击同方向后 |
+| `double_tap_window` | 0.5 s | 双击判定窗口 |
+
+双击加速沿用 Unity `rolemove.cs` 原逻辑：`double_tap_window` 内再次按同一方向 → Run；
+松开方向、改变方向、或超窗口后单次按 → 回到 Walk。不单独开 `SprintState`，只用
+`player.is_sprinting` 切换速度与动画名；不做体力 / 冲刺条。
+
+### Camera2D（Phase 1）
+
+- `position_smoothing_enabled = true`，`position_smoothing_speed = 8`
+- `drag_horizontal_enabled` / `drag_vertical_enabled = true`，margin `0.1`
+- `limit_left / top / right / bottom = -960 / -540 / 960 / 540`
+
+> **TODO（Phase 2）**：上面 4 个 limit 只是当前 `town.tscn` 的测试范围（背景
+> `ColorRect` 的 ±960 × ±540），**不是最终地图尺寸**。等 Tilemap 迁移完成、
+> 地图真实大小确定后，按世界边界重新设置。
+
 ### 素材说明
 
 `assets/` 里的图片从 `unity-app` 分支的 `Assets/img/` 整理而来，已按用途重新分类，
@@ -119,7 +170,10 @@ Phase 0 刻意只保留最小接口，玩法逻辑不放进全局单例。
   无文件名含义）转存为 `assets/environment/props/灌木丛_16种参考图.png`。
   该图是白底参考图，直接当精灵用需要先抠背景。
 
-#### 待人工导出的 PSB（Phase 1 前置）
+#### 待人工导出的 PSB（真实动画帧，仍阻塞）
+
+Phase 1 已用现有 PNG 占位跑通动画/移动架构，**不再被 PSB 阻塞**；但真实动画帧
+仍需人工导出后替换 `player_sprite_frames.tres`（碎石动画则等 Phase 3 用）。
 
 `unity-app` 里 6 个 `*.psb` 目前**没有**被导入 Godot，也没有生成任何转换文件：
 
@@ -143,7 +197,8 @@ Phase 0 刻意只保留最小接口，玩法逻辑不放进全局单例。
 ### 开发进度
 
 - ✅ **Phase 0**：Godot 基础骨架（项目配置、Input Map、物理层、目录结构、GameManager、town 空场景、Player 骨架 + Idle/Move 状态机、素材整理）
-- ⏭ **Phase 1**：玩家移动动画 + 相机（**前置：先把上面 6 个 PSB 导出为 PNG**）
+- ✅ **Phase 1**：玩家移动与动画（四向 facing、`AnimatedSprite2D` + 9 个动画名、walk/run、双击加速、`Camera2D` 平滑跟随 + limit）。**动画帧仍为占位**，真实 PSB 导出后替换 `player_sprite_frames.tres` 即可
+- ⏭ **Phase 2**：瓦片世界 + 碰撞（Tilemap / TileSet，需先转换 Unity 地形数据）
 
 完整规划见 `MIGRATION_PLAN.md`。
 

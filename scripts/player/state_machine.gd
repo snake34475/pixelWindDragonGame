@@ -18,6 +18,11 @@ func _ready() -> void:
 			state.state_machine = self
 			state.player = player
 			_states[state.name] = state
+
+
+## 由 Player._ready() 调用：子节点 _ready 早于父节点，等 Player 的
+## @onready 引用就绪后再启动，避免状态里访问到 null。
+func start() -> void:
 	change_state(initial_state)
 
 

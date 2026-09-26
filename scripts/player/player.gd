@@ -1,19 +1,30 @@
 class_name Player
 extends CharacterBody2D
-## 玩家骨架。
+## 玩家。
 ##
-## Phase 0 只做三件事：读输入、记录朝向、交给状态机决定速度。
+## Phase 1 只做：读输入 → 定四方向朝向 → 交给状态机决定速度与动画。
 ## 钩爪 / 炸石 / NPC 交互 / 水域 / 传送 / 战斗都还没进来。
+
+const FACING_UP := Vector2.UP
+const FACING_DOWN := Vector2.DOWN
+const FACING_LEFT := Vector2.LEFT
+const FACING_RIGHT := Vector2.RIGHT
 
 @export var stats: PlayerStatsData
 
 ## 本帧输入，已归一化（斜向不会更快）。
 var input_vector: Vector2 = Vector2.ZERO
 
-## 最近一次非零朝向。交互射线、钩爪方向、动画选帧都要用。
+## 最近一次非零朝向，只会是上下左右四者之一，动画/交互都读它。
 var facing: Vector2 = Vector2.DOWN
 
-@onready var sprite: Sprite2D = $Sprite2D
+## 双击同方向后在 double_tap_window 内置位，由 MoveState 消费。
+var is_sprinting: bool = false
+
+var _last_tap_direction: Vector2 = Vector2.ZERO
+var _last_tap_time: float = -1.0
+
+@onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var state_machine: StateMachine = $StateMachine
 
 
@@ -21,12 +32,71 @@ func _ready() -> void:
 	if stats == null:
 		push_warning("Player: 未指定 PlayerStatsData，回退到默认数值。")
 		stats = PlayerStatsData.new()
+	state_machine.start()
 
 
 func _physics_process(delta: float) -> void:
 	input_vector = Input.get_vector("move_left", "move_right", "move_up", "move_down")
-	if input_vector != Vector2.ZERO:
-		facing = input_vector
-		sprite.flip_h = facing.x < 0.0
+	_update_facing()
+	_update_sprint()
 	state_machine.physics_update(delta)
 	move_and_slide()
+
+
+## 当前移动速度：加速中走 run_speed，否则 walk_speed。
+func current_speed() -> float:
+	return stats.run_speed if is_sprinting else stats.walk_speed
+
+
+## 按 "前缀_方向后缀" 播放动画。同名动画不重启，避免逐帧 restart。
+func play_animation(prefix: String) -> void:
+	var target := "%s_%s" % [prefix, facing_suffix()]
+	if String(animated_sprite.animation) != target:
+		animated_sprite.play(target)
+
+
+## 当前朝向对应的动画后缀：up / down / side。
+func facing_suffix() -> String:
+	if absf(facing.x) > absf(facing.y):
+		return "side"
+	return "up" if facing.y < 0.0 else "down"
+
+
+## 把 input_vector 收敛到四方向，并同步左右翻转。
+func _update_facing() -> void:
+	if input_vector == Vector2.ZERO:
+		return
+	if absf(input_vector.x) > absf(input_vector.y):
+		facing = FACING_LEFT if input_vector.x < 0.0 else FACING_RIGHT
+	else:
+		facing = FACING_UP if input_vector.y < 0.0 else FACING_DOWN
+	# 只在水平朝向时翻转，与 Unity 原实现一致（上下行走保持上一次的左右朝向）。
+	if facing.x != 0.0:
+		animated_sprite.flip_h = facing.x < 0.0
+
+
+## 双击同一方向：窗口内再次按下则加速。松开方向或改方向会退出加速。
+func _update_sprint() -> void:
+	if input_vector == Vector2.ZERO:
+		is_sprinting = false
+		return
+	var tapped := _just_pressed_direction()
+	if tapped == Vector2.ZERO:
+		return
+	var now := float(Time.get_ticks_msec()) / 1000.0
+	is_sprinting = tapped == _last_tap_direction and now - _last_tap_time <= stats.double_tap_window
+	_last_tap_direction = tapped
+	_last_tap_time = now
+
+
+## 本帧刚按下的方向键，多个同时按下时按 上/下/左/右 顺序取第一个。
+func _just_pressed_direction() -> Vector2:
+	if Input.is_action_just_pressed("move_up"):
+		return FACING_UP
+	if Input.is_action_just_pressed("move_down"):
+		return FACING_DOWN
+	if Input.is_action_just_pressed("move_left"):
+		return FACING_LEFT
+	if Input.is_action_just_pressed("move_right"):
+		return FACING_RIGHT
+	return Vector2.ZERO
