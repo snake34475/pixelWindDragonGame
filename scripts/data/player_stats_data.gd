@@ -1,0 +1,13 @@
+class_name PlayerStatsData
+extends Resource
+## 玩家数值。
+##
+## Unity 原值（rolemove.speed = 0.3 / runSpeed = 1|2）是"格每帧"体系，
+## Godot 用像素每秒，因此这里按 32 px 瓦片重新给了合理值，不机械照搬。
+
+@export var walk_speed: float = 60.0
+@export var sprint_multiplier: float = 2.0
+@export var sprint_window: float = 0.5
+@export var hook_speed: float = 400.0
+@export var hook_range: float = 320.0
+@export var body_size: Vector2 = Vector2(24, 32)
