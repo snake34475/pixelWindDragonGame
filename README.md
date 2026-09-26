@@ -39,7 +39,7 @@
 
 ```
 assets/                     美术素材（从 unity-app 整理而来，见下文）
-├── characters/dragon/      龙人：站立/出钩/冲刺/游泳遮罩
+├── characters/dragon/      龙人动画帧：idle / walk_down / walk_up / walk_side / run
 ├── characters/npc/         佟湘玉立绘
 ├── enemies/hanba/          旱魃 启动/未启动
 ├── items/                  钩爪 / 锁链 / 飞镖
@@ -66,6 +66,9 @@ scripts/
 resources/
 ├── characters/             player_stats.tres、player_sprite_frames.tres
 └── world/                  （待后续 Phase）
+
+tests/                      无头测试（SceneTree 脚本，退出码 0 = 通过）
+└── test_player_animation.gd
 ```
 
 ### 操作（Input Map）
@@ -117,19 +120,28 @@ Player (CharacterBody2D)
     └── MoveState
 ```
 
-动画名（用 `AnimatedSprite2D.play(name)` 按名播放，不引入 AnimationTree）：
+动画名（用 `AnimatedSprite2D.play(name)` 按名播放，不引入 AnimationTree）。
+素材只手工导出到 5 组动作，因此 `player_sprite_frames.tres` 里**只有 5 个动画**：
 
-```
-idle_down / idle_up / idle_side
-walk_down / walk_up / walk_side
-run_down  / run_up  / run_side
-```
+| 动画 | 帧数 | FPS | 来源文件夹 |
+| --- | --- | --- | --- |
+| `idle_down` | 2 | 4 | `站立` |
+| `walk_down` | 4 | 8 | `正面走路` |
+| `walk_up` | 3 | 6 | `背面走路` |
+| `walk_side` | 4 | 8 | `走路` |
+| `run_side` | 6 | 12 | `奔跑6帧` |
 
-左右不做两套动画，靠 `AnimatedSprite2D.flip_h` 翻转。
+`idle_up` / `idle_side` / `run_down` / `run_up` 没有独立素材，`player.gd` 的
+`ANIMATION_FALLBACK` 把它们映射到最接近的可用动画（向上/侧向待机 → `idle_down`，
+向上/向下奔跑 → `run_side`）。补齐素材时删掉对应条目、往 `.tres` 里加动画即可，
+状态机与移动逻辑不用改。
 
-> ⚠️ **当前 9 个动画都是占位**：真实帧还没从 PSB 导出，`player_sprite_frames.tres`
-> 里 `idle_*` 用 `人物出钩.png`、`walk_*` / `run_*` 用 `人物冲.png` 各一帧顶替。
-> 拿到真实 sprite sheet 后**只需替换这个 `.tres`**，Player 与状态机代码不用改。
+左右不做两套动画，靠 `AnimatedSprite2D.flip_h` 翻转（向右 `false`、向左 `true`）。
+
+每帧已补齐到统一画布 94×81（RGBA，靴底对齐 y=75、头部中心 x=47），避免各帧
+原始尺寸不一导致播放抖动。补的是透明像素，没有改动任何可见像素。
+
+> 帧序来自文件名 `*_01.png`…，与原始 PSB 中的图层顺序一致。
 
 朝向由 `player.gd` 收敛为上下左右四者之一（斜向按主导轴判定），状态机只读
 `player.facing`，不自己猜方向。
@@ -156,6 +168,21 @@ run_down  / run_up  / run_side
 > `ColorRect` 的 ±960 × ±540），**不是最终地图尺寸**。等 Tilemap 迁移完成、
 > 地图真实大小确定后，按世界边界重新设置。
 
+### 测试
+
+无头运行，验证场景加载、5 个动画的帧数/尺寸/FPS、四方向移动、停止切回 Idle、
+双击奔跑、左右 `flip_h`、以及动画不逐帧重启：
+
+```bash
+godot --headless --path . --script res://tests/test_player_animation.gd
+```
+
+退出码 `0` = 全部通过，`1` = 有失败项。当前 72 项检查全部通过。
+
+> 无头环境下 `Input.action_press` 需要至少 1 个物理帧才会被
+> `is_action_just_pressed` 观察到，所以测试里的"轻点"要按住 2～3 帧；
+> 检查 `is_sprinting` 时也必须保持按住，松开后它会立刻被清零。
+
 ### 素材说明
 
 `assets/` 里的图片从 `unity-app` 分支的 `Assets/img/` 整理而来，已按用途重新分类，
@@ -170,25 +197,22 @@ run_down  / run_up  / run_side
   无文件名含义）转存为 `assets/environment/props/灌木丛_16种参考图.png`。
   该图是白底参考图，直接当精灵用需要先抠背景。
 
-#### 待人工导出的 PSB（真实动画帧，仍阻塞）
+#### PSB 帧的导出情况
 
-Phase 1 已用现有 PNG 占位跑通动画/移动架构，**不再被 PSB 阻塞**；但真实动画帧
-仍需人工导出后替换 `player_sprite_frames.tres`（碎石动画则等 Phase 3 用）。
+`unity-app` 里的 `*.psb` **没有**被导入 Godot，也不打算自动转换（`sips` 导出的
+扁平图各图层在画布上位置不规则，无法可靠切帧）。龙人的 5 组动作已由人工拆帧、
+导出为 PNG 序列帧，放进 `assets/characters/dragon/`：
 
-`unity-app` 里 6 个 `*.psb` 目前**没有**被导入 Godot，也没有生成任何转换文件：
+| PSB 文件 | 对应输出 | 状态 |
+| --- | --- | --- |
+| `Assets/img/role/dragin/龙人站立.psb` | `assets/characters/dragon/idle/`（2 帧） | ✅ 已导出 |
+| `Assets/img/role/dragin/正身走路.psb` | `assets/characters/dragon/walk_down/`（4 帧） | ✅ 已导出 |
+| `Assets/img/role/dragin/背身走路.psb` | `assets/characters/dragon/walk_up/`（3 帧） | ✅ 已导出 |
+| `Assets/img/role/dragin/走路.psb` | `assets/characters/dragon/walk_side/`（4 帧） | ✅ 已导出 |
+| `Assets/img/role/dragin/跑路6帧.psb` | `assets/characters/dragon/run/`（6 帧） | ✅ 已导出 |
+| `Assets/img/map/地面素材/碎石动画.psb` | `assets/effects/stone_break/` | ⏭ 待 Phase 3 导出 |
 
-| PSB 文件 | 尺寸 | 内容 | 建议导出 |
-| --- | --- | --- | --- |
-| `Assets/img/role/dragin/龙人站立.psb` | 120×150 | 站立（约 1 帧） | `dragon_idle_down.png`，单帧 |
-| `Assets/img/role/dragin/走路.psb` | 300×150 | 走路（正面/侧面，约 3 帧） | `dragon_walk_<dir>.png`，横向排列帧 |
-| `Assets/img/role/dragin/正身走路.psb` | 300×150 | 正身走路（约 3 帧） | `dragon_walk_down.png` |
-| `Assets/img/role/dragin/背身走路.psb` | 300×150 | 背身走路（约 2 帧） | `dragon_walk_up.png` |
-| `Assets/img/role/dragin/跑路6帧.psb` | 500×150 | 跑/冲刺 6 帧 | `dragon_run_<dir>.png` |
-| `Assets/img/map/地面素材/碎石动画.psb` | 64×32 | 石头破碎 | `stone_break.png`，横向排列帧 |
-
-建议导出结构：**每个动作一张横向 sprite sheet**，帧宽一致、帧序从左到右、
-背景透明（RGBA）、保持原始像素尺寸不做缩放。导出后放进
-`assets/characters/dragon/` 与 `assets/effects/stone_break/`。
+导出约定：帧宽一致、帧序从左到右、背景透明（RGBA）、保持原始像素尺寸不做缩放。
 
 > 环境说明：本机 macOS 的 `sips` 能读取 PSB 并导出扁平化 PNG，但实测各图层在画布上
 > 位置不规则（例如 `走路.psb` 只有 3 个可见图形、`背身走路.psb` 只有 2 个，
@@ -197,7 +221,7 @@ Phase 1 已用现有 PNG 占位跑通动画/移动架构，**不再被 PSB 阻�
 ### 开发进度
 
 - ✅ **Phase 0**：Godot 基础骨架（项目配置、Input Map、物理层、目录结构、GameManager、town 空场景、Player 骨架 + Idle/Move 状态机、素材整理）
-- ✅ **Phase 1**：玩家移动与动画（四向 facing、`AnimatedSprite2D` + 9 个动画名、walk/run、双击加速、`Camera2D` 平滑跟随 + limit）。**动画帧仍为占位**，真实 PSB 导出后替换 `player_sprite_frames.tres` 即可
+- ✅ **Phase 1**：玩家移动与动画（四向 facing、`AnimatedSprite2D` + 5 组真实动画帧、walk/run、双击加速、`Camera2D` 平滑跟随 + limit、左右 `flip_h`）
 - ⏭ **Phase 2**：瓦片世界 + 碰撞（Tilemap / TileSet，需先转换 Unity 地形数据）
 
 完整规划见 `MIGRATION_PLAN.md`。

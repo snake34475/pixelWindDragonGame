@@ -10,6 +10,16 @@ const FACING_DOWN := Vector2.DOWN
 const FACING_LEFT := Vector2.LEFT
 const FACING_RIGHT := Vector2.RIGHT
 
+## 素材只有 idle_down / walk_down / walk_up / walk_side / run_side 五组，
+## 向上、左右待机与向上、向下奔跑没有独立素材，回退到最接近的可用动画。
+## 补到新素材时，删掉对应条目并往 SpriteFrames 里加动画即可，逻辑不用改。
+const ANIMATION_FALLBACK := {
+	&"idle_up": &"idle_down",
+	&"idle_side": &"idle_down",
+	&"run_down": &"run_side",
+	&"run_up": &"run_side",
+}
+
 @export var stats: PlayerStatsData
 
 ## 本帧输入，已归一化（斜向不会更快）。
@@ -49,9 +59,12 @@ func current_speed() -> float:
 
 
 ## 按 "前缀_方向后缀" 播放动画。同名动画不重启，避免逐帧 restart。
+## 目标动画不存在时查 ANIMATION_FALLBACK，仍然没有就退回 idle_down。
 func play_animation(prefix: String) -> void:
-	var target := "%s_%s" % [prefix, facing_suffix()]
-	if String(animated_sprite.animation) != target:
+	var target: StringName = StringName("%s_%s" % [prefix, facing_suffix()])
+	if not animated_sprite.sprite_frames.has_animation(target):
+		target = ANIMATION_FALLBACK.get(target, &"idle_down")
+	if animated_sprite.animation != target:
 		animated_sprite.play(target)
 
 
