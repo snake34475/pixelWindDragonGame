@@ -4,8 +4,8 @@
 
 [resource]
 script = ExtResource("1_stats")
-walk_speed = 60.0
-run_speed = 120.0
+walk_speed = 90.0
+run_speed = 180.0
 double_tap_window = 0.5
 hook_speed = 400.0
 hook_range = 320.0

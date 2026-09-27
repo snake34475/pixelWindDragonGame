@@ -27,6 +27,8 @@ const EXPECTED_SPEEDS := {
 }
 
 const EXPECTED_FRAME_SIZE := Vector2i(94, 81)
+const EXPECTED_WALK_SPEED := 90.0
+const EXPECTED_RUN_SPEED := 180.0
 
 var _checks: int = 0
 var _failures: int = 0
@@ -137,6 +139,10 @@ func _run() -> void:
 	_check("初始朝向 = 下", _player.facing == Vector2.DOWN)
 	_check("初始动画 = idle_down", _anim() == &"idle_down", "实际 %s" % _anim())
 	_check("初始状态 = IdleState", _state() == &"IdleState", "实际 %s" % _state())
+	_check("walk_speed = 90", is_equal_approx(_player.stats.walk_speed, EXPECTED_WALK_SPEED),
+		"实际 %.1f" % _player.stats.walk_speed)
+	_check("run_speed = 180", is_equal_approx(_player.stats.run_speed, EXPECTED_RUN_SPEED),
+		"实际 %.1f" % _player.stats.run_speed)
 
 	# ---------- 2. 四方向移动 ----------
 	print("\n[2] 四方向移动")
@@ -180,6 +186,7 @@ func _run() -> void:
 	await _test_sprint("move_left", "左", Vector2.LEFT)
 	await _test_sprint("move_up", "上", Vector2.UP)
 	await _test_sprint("move_down", "下", Vector2.DOWN)
+	await _test_sprint_keeps_direction_change()
 
 	# ---------- 5. 动画不逐帧重启 ----------
 	print("\n[5] 动画切换只在变化时发生")
@@ -196,7 +203,8 @@ func _run() -> void:
 	_finish()
 
 
-## 双击同方向 -> is_sprinting = true -> 播放 run_side（run_up / run_down 回退到 run_side）
+## 双击同方向 -> is_sprinting = true。
+## 横向使用 run_side；纵向没有独立奔跑素材，回退到 walk_up / walk_down。
 ## 第二次轻点保持按住，否则松开后 is_sprinting 会立刻被清零，检查不到奔跑状态。
 func _test_sprint(action: String, label: String, expected_facing: Vector2) -> void:
 	await _tap(action)
@@ -204,7 +212,13 @@ func _test_sprint(action: String, label: String, expected_facing: Vector2) -> vo
 	_check("双击%s -> facing = %s" % [label, expected_facing], _player.facing == expected_facing,
 		"实际 %s" % _player.facing)
 	_check("双击%s -> is_sprinting = true" % label, _player.is_sprinting == true)
-	_check("双击%s -> 动画 = run_side" % label, _anim() == &"run_side", "实际 %s" % _anim())
+	var expected_animation: StringName = &"run_side"
+	if expected_facing == Vector2.UP:
+		expected_animation = &"walk_up"
+	elif expected_facing == Vector2.DOWN:
+		expected_animation = &"walk_down"
+	_check("双击%s -> 动画 = %s" % [label, expected_animation], _anim() == expected_animation,
+		"实际 %s" % _anim())
 	_check("双击%s -> 速度 = run_speed" % label,
 		is_equal_approx(_player.current_speed(), _player.stats.run_speed),
 		"实际 %.1f" % _player.current_speed())
@@ -213,6 +227,22 @@ func _test_sprint(action: String, label: String, expected_facing: Vector2) -> vo
 		await physics_frame
 	_check("松开%s -> is_sprinting = false" % label, _player.is_sprinting == false)
 	_check("松开%s -> 回到 idle_down" % label, _anim() == &"idle_down", "实际 %s" % _anim())
+
+
+## 横向奔跑中按 W 改变方向，仍应保持奔跑和 run_speed，纵向动画回退到 walk_up。
+func _test_sprint_keeps_direction_change() -> void:
+	await _tap("move_right")
+	await _tap("move_right", false)
+	Input.action_press("move_up")
+	for i in 3:
+		await physics_frame
+	_check("奔跑中按 W -> is_sprinting = true", _player.is_sprinting == true)
+	_check("奔跑中按 W -> 状态 = MoveState", _state() == &"MoveState", "实际 %s" % _state())
+	_check("奔跑中按 W -> 动画 = walk_up", _anim() == &"walk_up", "实际 %s" % _anim())
+	_check("奔跑中按 W -> 速度仍为 run_speed",
+		is_equal_approx(_player.current_speed(), _player.stats.run_speed),
+		"实际 %.1f" % _player.current_speed())
+	await _release_all()
 
 
 func _finish() -> void:

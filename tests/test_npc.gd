@@ -69,8 +69,14 @@ func _run() -> void:
 
 	npc.speed = 0.0
 	npc.direction = 1
+	await physics_frame
+	_check("NPC 向右时精灵翻转", sprite.flip_h == true)
+	npc.direction = -1
+	await physics_frame
+	_check("NPC 向左时精灵不翻转", sprite.flip_h == false)
+	npc.direction = 1
+	await physics_frame
 	npc.global_position = Vector2(80, 0)
-	npc.animated_sprite.flip_h = false
 	npc.dialog_duration = 0.15
 	player.global_position = Vector2.ZERO
 	player.facing = Vector2.RIGHT

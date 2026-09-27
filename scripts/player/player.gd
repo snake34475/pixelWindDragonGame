@@ -11,12 +11,13 @@ const FACING_RIGHT := Vector2.RIGHT
 
 ## 素材只有 idle_down / walk_down / walk_up / walk_side / run_side 五组，
 ## 向上、左右待机与向上、向下奔跑没有独立素材，回退到最接近的可用动画。
+## 纵向奔跑暂时复用 walk_up / walk_down 帧，但移动速度仍由 is_sprinting 决定。
 ## 补到新素材时，删掉对应条目并往 SpriteFrames 里加动画即可，逻辑不用改。
 const ANIMATION_FALLBACK := {
 	&"idle_up": &"idle_down",
 	&"idle_side": &"idle_down",
-	&"run_down": &"run_side",
-	&"run_up": &"run_side",
+	&"run_down": &"walk_down",
+	&"run_up": &"walk_up",
 }
 
 @export var stats: PlayerStatsData
@@ -165,13 +166,14 @@ func _update_facing() -> void:
 		animated_sprite.flip_h = facing.x < 0.0
 
 
-## 双击同一方向：窗口内再次按下则加速。松开方向或改方向会退出加速。
+## 双击同一方向：窗口内再次按下则进入奔跑。
+## 奔跑期间改变方向会保持奔跑，只有输入完全归零才退出。
 func _update_sprint() -> void:
 	if input_vector == Vector2.ZERO:
 		is_sprinting = false
 		return
 	var tapped := _just_pressed_direction()
-	if tapped == Vector2.ZERO:
+	if tapped == Vector2.ZERO or is_sprinting:
 		return
 	var now := float(Time.get_ticks_msec()) / 1000.0
 	is_sprinting = tapped == _last_tap_direction and now - _last_tap_time <= stats.double_tap_window

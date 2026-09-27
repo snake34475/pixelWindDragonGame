@@ -31,7 +31,8 @@ func _physics_process(delta: float) -> void:
 		_wander_elapsed = 0.0
 		direction *= -1
 	velocity = Vector2(direction * speed, 0.0)
-	animated_sprite.flip_h = direction < 0
+	# 佟湘玉精灵原画朝向左侧；向右移动时需要水平翻转。
+	animated_sprite.flip_h = direction > 0
 	play_animation(&"walk_side")
 	move_and_slide()
 

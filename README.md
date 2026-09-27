@@ -94,7 +94,7 @@ tests/                       无头测试（SceneTree 脚本，退出码 0 = 通
 | 操作 | 按键 | 当前行为 |
 | --- | --- | --- |
 | 移动 | `W/A/S/D` 或方向键 | 四方向移动；斜向输入会归一化，不会更快 |
-| 奔跑 | 0.5 秒内双击同一方向并保持按住 | 使用 run 速度；松开方向或改方向后退出奔跑 |
+| 奔跑 | 0.5 秒内双击同一方向并保持按住 | 使用 run 速度；奔跑中改变方向仍保持，全部方向松开后退出 |
 | 炸石 | `Q` | 清除玩家朝向前方的石障并播放碎石特效；目标不是石障时无效果 |
 | 钩爪 | 按住 `E`，再点击鼠标左键 | 朝鼠标世界坐标发射飞钩；命中 `eaves` 后把玩家拉向命中点，未命中或超程时回收 |
 | 传送 | 走进传送圈 | 在城镇与旱魃地图之间切换，并落到目标出生点 |
@@ -150,8 +150,8 @@ Player (CharacterBody2D)
 
 `idle_up` / `idle_side` / `run_down` / `run_up` 没有独立素材，`player.gd` 的
 `ANIMATION_FALLBACK` 把它们映射到最接近的可用动画（向上/侧向待机 → `idle_down`，
-向上/向下奔跑 → `run_side`）。补齐素材时删掉对应条目、往 `.tres` 里加动画即可，
-状态机与移动逻辑不用改。
+向上/向下奔跑暂时复用 `walk_up` / `walk_down`，移动速度仍按奔跑计算）。补齐素材时
+删掉对应条目、往 `.tres` 里加动画即可，状态机与移动逻辑不用改。
 
 左右不做两套动画，靠 `AnimatedSprite2D.flip_h` 翻转（向右 `false`、向左 `true`）。
 
@@ -167,13 +167,13 @@ Player (CharacterBody2D)
 
 | 参数 | 值 | 说明 |
 | --- | --- | --- |
-| `walk_speed` | 60 px/s | 普通移动 |
-| `run_speed` | 120 px/s | 双击同方向后 |
+| `walk_speed` | 90 px/s | 普通移动（原 60 px/s 的 1.5 倍） |
+| `run_speed` | 180 px/s | 双击同方向后（原 120 px/s 的 1.5 倍） |
 | `double_tap_window` | 0.5 s | 双击判定窗口 |
 
 双击加速沿用 Unity `rolemove.cs` 原逻辑：`double_tap_window` 内再次按同一方向 → Run；
-松开方向、改变方向、或超窗口后单次按 → 回到 Walk。不单独开 `SprintState`，只用
-`player.is_sprinting` 切换速度与动画名；不做体力 / 冲刺条。
+奔跑中改变方向不会退出，全部方向松开后回到 Walk。不单独开 `SprintState`，只用
+`player.is_sprinting` 切换速度与动画名；纵向暂时播放走路帧；不做体力 / 冲刺条。
 
 ### Camera2D（Phase 1）
 
@@ -255,8 +255,8 @@ Y-sort 基准点 = **脚底**：`AnimatedSprite2D.offset = (0, -34.5)`（帧高 
 本机 Godot 位于 `/Applications/Godot.app/Contents/MacOS/Godot`；若已将 Godot
 加入 `PATH`，可将下列命令中的完整路径替换为 `godot`。
 
-**Phase 1 — 玩家动画**（72 项）：场景加载、5 个动画的帧数/尺寸/FPS、四方向移动、
-停止切回 Idle、双击奔跑、左右 `flip_h`、动画不逐帧重启。
+**Phase 1 — 玩家动画**（78 项）：场景加载、5 个动画的帧数/尺寸/FPS、四方向移动、
+停止切回 Idle、双击奔跑、奔跑中变向、左右 `flip_h`、动画不逐帧重启。
 
 ```bash
 /Applications/Godot.app/Contents/MacOS/Godot --headless --path . --script res://tests/test_player_animation.gd
@@ -290,7 +290,7 @@ Y-sort 基准点 = **脚底**：`AnimatedSprite2D.offset = (0, -34.5)`（帧高 
 /Applications/Godot.app/Contents/MacOS/Godot --headless --path . --script res://tests/test_teleport.gd
 ```
 
-**Phase 6 — NPC / 对话框**（23 项）：NPC 水平游荡与 5 秒换向、`C` 射线交互、
+**Phase 6 — NPC / 对话框**（25 项）：NPC 水平游荡与 5 秒换向、左右朝向翻转、`C` 射线交互、
 `InteractState` 输入锁定、说话人和文本显示、3 秒关闭及状态恢复。
 
 ```bash

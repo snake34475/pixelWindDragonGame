@@ -7,8 +7,8 @@ extends Resource
 ##
 ## 移动相关的三个值集中放这里，代码里不再出现魔法数字。
 
-@export var walk_speed: float = 60.0
-@export var run_speed: float = 120.0
+@export var walk_speed: float = 90.0
+@export var run_speed: float = 180.0
 @export var double_tap_window: float = 0.5
 @export var hook_speed: float = 400.0
 @export var hook_range: float = 320.0
