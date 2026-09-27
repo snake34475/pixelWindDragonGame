@@ -422,7 +422,7 @@ def kind_of(name: str) -> str:
 
 # 物理层（MIGRATION_PLAN §12.1）：1 world / 4 eaves / 5 town / 7 pond。
 # 玩家 collision_mask 只含 1 world，所以能挡住玩家的道具必须带 world 位。
-_LAYER_OF_KIND = {"tree": 1, "town": 1, "eaves": 1 | 4, "pond": 7}
+_LAYER_OF_KIND = {"tree": 1, "town": 1, "eaves": 1 | 8, "pond": 7}
 
 
 def make_prop(name: str, guid: str, file_id: int, ux: float, uy: float,

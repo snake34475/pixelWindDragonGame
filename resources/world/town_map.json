@@ -8515,7 +8515,7 @@
    ],
    "flip_h": false,
    "flip_v": false,
-   "collision_layer": 5,
+   "collision_layer": 9,
    "collision_size": [
     687.36,
     53.76

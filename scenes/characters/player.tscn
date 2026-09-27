@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=10 format=3]
 
 [ext_resource type="Script" path="res://scripts/player/player.gd" id="1_player"]
 [ext_resource type="Resource" path="res://resources/characters/player_stats.tres" id="2_stats"]
@@ -6,6 +6,8 @@
 [ext_resource type="Script" path="res://scripts/player/state_machine.gd" id="4_machine"]
 [ext_resource type="Script" path="res://scripts/player/states/idle_state.gd" id="5_idle"]
 [ext_resource type="Script" path="res://scripts/player/states/move_state.gd" id="6_move"]
+[ext_resource type="Script" path="res://scripts/player/states/hook_throw_state.gd" id="7_hook_throw"]
+[ext_resource type="Script" path="res://scripts/player/states/hook_pull_state.gd" id="8_hook_pull"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
 size = Vector2(24, 32)
@@ -49,3 +51,9 @@ script = ExtResource("5_idle")
 
 [node name="MoveState" type="Node" parent="StateMachine"]
 script = ExtResource("6_move")
+
+[node name="HookThrowState" type="Node" parent="StateMachine"]
+script = ExtResource("7_hook_throw")
+
+[node name="HookPullState" type="Node" parent="StateMachine"]
+script = ExtResource("8_hook_pull")

@@ -2,8 +2,7 @@ class_name Player
 extends CharacterBody2D
 ## 玩家。
 ##
-## Phase 1 只做：读输入 → 定四方向朝向 → 交给状态机决定速度与动画。
-## 钩爪 / 炸石 / NPC 交互 / 水域 / 传送 / 战斗都还没进来。
+## 移动、朝向、动画和钩爪状态入口。
 
 const FACING_UP := Vector2.UP
 const FACING_DOWN := Vector2.DOWN
@@ -31,8 +30,13 @@ var facing: Vector2 = Vector2.DOWN
 ## 双击同方向后在 double_tap_window 内置位，由 MoveState 消费。
 var is_sprinting: bool = false
 
+## 当前飞钩和拉拽目标；钩爪状态通过这两个节点外字段交接。
+var active_hook: Hook
+var hook_anchor: Vector2 = Vector2.ZERO
+
 var _last_tap_direction: Vector2 = Vector2.ZERO
 var _last_tap_time: float = -1.0
+var _pending_hook_target: Vector2 = Vector2.ZERO
 
 @onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var state_machine: StateMachine = $StateMachine
@@ -49,8 +53,30 @@ func _physics_process(delta: float) -> void:
 	input_vector = Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	_update_facing()
 	_update_sprint()
+	_try_start_hook()
 	state_machine.physics_update(delta)
-	move_and_slide()
+	if velocity != Vector2.ZERO:
+		move_and_slide()
+
+
+## 按住 E 后点击左键，朝鼠标世界坐标出钩。
+func start_hook(target_global_position: Vector2) -> bool:
+	if not can_start_hook():
+		return false
+	_pending_hook_target = target_global_position
+	state_machine.change_state(&"HookThrowState")
+	return true
+
+
+## Idle/Move 可出钩；其他状态或已有飞钩时拒绝重复发射。
+func can_start_hook() -> bool:
+	if active_hook != null or state_machine.current_state == null:
+		return false
+	return state_machine.current_state.name in [&"IdleState", &"MoveState"]
+
+
+func take_pending_hook_target() -> Vector2:
+	return _pending_hook_target
 
 
 ## 当前移动速度：加速中走 run_speed，否则 walk_speed。
@@ -100,6 +126,11 @@ func _update_sprint() -> void:
 	is_sprinting = tapped == _last_tap_direction and now - _last_tap_time <= stats.double_tap_window
 	_last_tap_direction = tapped
 	_last_tap_time = now
+
+
+func _try_start_hook() -> void:
+	if Input.is_action_pressed("hook") and Input.is_action_just_pressed("hook_fire"):
+		start_hook(get_global_mouse_position())
 
 
 ## 本帧刚按下的方向键，多个同时按下时按 上/下/左/右 顺序取第一个。

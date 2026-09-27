@@ -5,22 +5,21 @@
 
 ## 当前基线
 
-- `main`：Phase 0～3 已完成；Phase 3 为当前工作基线
+- `main`：Phase 0～4 已完成；Phase 4 为当前工作基线
 - 已验证：Godot 4.7.2 下 `test_player_animation.gd` 为 72/72 通过，
-  `test_town_map.gd` 为 35/35 通过，`test_tile_destructor.gd` 为 15/15 通过。
+  `test_town_map.gd` 为 35/35 通过，`test_tile_destructor.gd` 为 15/15 通过，
+  `test_hook.gd` 为 24/24 通过。
 - 不修改 `unity-app`；仅通过 `git show unity-app:<路径>` 读取其历史实现。
 
-## 现在进行：Phase 4 — 钩爪（E + 左键）
+## 下一阶段：Phase 5 — 传送圈与多场景
 
-- [ ] 建立飞镖/钩爪场景：朝鼠标世界坐标飞行，命中 `eaves` 层才报告成功，未命中自动销毁。
-- [ ] 在玩家侧增加钩爪状态：命中后拉向锚点，抵达锚点或异常中断时恢复普通移动。
-- [ ] 用信号传递“命中锚点 / 取消”，不要让飞镖脚本直接修改玩家 Transform、旋转或动画。
-- [ ] 处理发射范围、墙体/屋檐命中、重复发射和移动输入优先级。
-- [ ] 增加无头测试，并回归 Phase 1～3。
+- [ ] 从 Unity 场景和预制体确认传送圈的触发范围、目标场景和出生点偏移。
+- [ ] 建立传送圈场景，复用 `GameManager.request_scene_change()` 完成双向切换。
+- [ ] 在新场景消费一次性出生点标记，避免玩家出现在传送圈内导致循环传送。
+- [ ] 增加无头测试，并回归 Phase 1～4。
 
 ## 后续迁移顺序
 
-- [ ] **Phase 5：传送圈与多场景**。复用 `GameManager.request_scene_change()` 与出生点接口。
 - [ ] **Phase 6：NPC 与对话框**。实现交互检测、对话 UI 和最小 NPC 行为。
 - [ ] **Phase 7：水域表现**。将现有池塘 `Area2D` 接入玩家入水视觉，不把水域设为实体障碍。
 - [ ] **Phase 8：2D 光照与视觉打磨**。在玩法链路完成后再调。

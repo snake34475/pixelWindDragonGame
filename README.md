@@ -223,7 +223,7 @@ godot --headless --path . --script res://tools/render_town_preview.gd -- /tmp/to
 | `World/TownMap/Zones` | Node2D | 池塘 = `Area2D`，层 **7 pond**（不阻挡玩家） |
 | `World/Entities/Player` | CharacterBody2D | 与 Props 同一 Y-sort 层级 |
 
-道具碰撞层：树木 / 朱门 = **1 world**，屋檐 = **1 world + 4 eaves**，池塘 = **7 pond**。
+道具碰撞层：树木 / 朱门 = **1 world**，屋檐 = **1 world + 8 eaves**（第 4 层位掩码），池塘 = **7 pond**。
 玩家 `collision_mask = 1`，所以树木/朱门/屋檐会挡住玩家，池塘不会。
 
 Y-sort 基准点 = **脚底**：`AnimatedSprite2D.offset = (0, -34.5)`（帧高 81、靴底 y=75）、
@@ -239,7 +239,7 @@ Y-sort 基准点 = **脚底**：`AnimatedSprite2D.offset = (0, -34.5)`（帧高 
 
 ### 测试
 
-两个 SceneTree 无头测试，退出码 `0` = 全部通过、`1` = 有失败项。
+四个 SceneTree 无头测试，退出码 `0` = 全部通过、`1` = 有失败项。
 
 本机 Godot 位于 `/Applications/Godot.app/Contents/MacOS/Godot`；若已将 Godot
 加入 `PATH`，可将下列命令中的完整路径替换为 `godot`。
@@ -263,6 +263,13 @@ Y-sort 基准点 = **脚底**：`AnimatedSprite2D.offset = (0, -34.5)`（帧高 
 
 ```bash
 /Applications/Godot.app/Contents/MacOS/Godot --headless --path . --script res://tests/test_tile_destructor.gd
+```
+
+**Phase 4 — 飞钩 / 钩爪**（24 项）：`eaves` 物理层、飞钩命中与失败回收、信号通知、
+玩家抓取/拉拽状态、重复发射拦截、拉拽期间移动锁定与锚点到达。
+
+```bash
+/Applications/Godot.app/Contents/MacOS/Godot --headless --path . --script res://tests/test_hook.gd
 ```
 
 > 无头环境下 `Input.action_press` 需要至少 1 个物理帧才会被
@@ -301,19 +308,25 @@ Y-sort 基准点 = **脚底**：`AnimatedSprite2D.offset = (0, -34.5)`（帧高 
 碎石当前由桌面素材文件夹提供 7 帧，文件名 `7.png`（完整石头）至 `1.png`（碎裂残片）；
 Godot 场景按 `7 → 1` 播放。各帧保持原始尺寸与透明通道，在场景中按 ×2 缩放匹配 64px 世界格。
 
+钩爪使用 `Assets/img/atk/飞镖.png` 与 `Assets/img/atk/锁链1.png`，分别整理为
+`assets/effects/hook/dart.png` 和 `assets/effects/hook/chain.png`；按原 PPU 100 / 200
+换算到 64px 世界比例后接入 `hook.tscn`。
+
 > 环境说明：本机 macOS 的 `sips` 能读取 PSB 并导出扁平化 PNG，但实测各图层在画布上
 > 位置不规则（例如 `走路.psb` 只有 3 个可见图形、`背身走路.psb` 只有 2 个，
 > 且间距不均），无法可靠地切分出帧边界。因此这里不做自动切片，避免产出错误帧。
 
 ### 开发进度
 
-Phase 3 基于 `7e20afe`（`feat: add tilemap world`）继续开发。2026-09-27 已用 Godot
-4.7.2 重新验证：Phase 1 测试 72/72、Phase 2 测试 35/35、Phase 3 测试 15/15，均通过。
+Phase 4 基于 `014e6a3`（`feat: add stone tile destruction`）继续开发。2026-09-27 已用
+Godot 4.7.2 重新验证：Phase 1 测试 72/72、Phase 2 测试 35/35、Phase 3 测试 15/15、
+Phase 4 测试 24/24，均通过。
 
 - ✅ **Phase 0**：Godot 基础骨架（项目配置、Input Map、物理层、目录结构、GameManager、town 空场景、Player 骨架 + Idle/Move 状态机、素材整理）
 - ✅ **Phase 1**：玩家移动与动画（四向 facing、`AnimatedSprite2D` + 5 组真实动画帧、walk/run、双击加速、`Camera2D` 平滑跟随 + limit、左右 `flip_h`）
 - ✅ **Phase 2**：瓦片世界 + 碰撞（Unity 地形/道具脚本还原 → `town_map.tscn`、TileSet + TileMapLayer、Y-sort 遮挡、障碍与道具碰撞、池塘 Area2D）
 - ✅ **Phase 3**：石头破坏（Q）（前方格检测、Tile 与碰撞清除、7 帧碎石动画、自动回收；15 项无头测试）
+- ✅ **Phase 4**：飞钩 / 钩爪（E + 左键）（鼠标世界坐标、`eaves` 物理层命中、信号驱动 `HookThrowState` / `HookPullState`、拉拽期间移动锁定；24 项无头测试）
 
 下一步与阻塞项见 [TODO.md](TODO.md)。完整迁移设计与 Unity 侧证据见 `MIGRATION_PLAN.md`；已完成阶段的实施复盘放在 `.trae/documents/`。
 
