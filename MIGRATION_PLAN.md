@@ -1,6 +1,6 @@
 # Unity → Godot 4 迁移方案（MIGRATION_PLAN）
 
-> 状态：**Phase 0～7 已完成，Phase 8 待开始**。本文件保留规划与 Unity 侧调查证据。
+> 状态：**Phase 0～8 已完成，Unity 原型迁移队列收口**。本文件保留规划与 Unity 侧调查证据。
 > 参考实现：`unity-app` 分支（只读，未做任何修改）。
 > 目标分支：`main`（Godot 4）。
 > 分析日期：2026-09-26

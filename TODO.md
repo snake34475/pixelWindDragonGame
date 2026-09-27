@@ -11,19 +11,18 @@
 
 ## 当前基线
 
-- `main`：Phase 0～7 已完成；Phase 7 为当前工作基线
+- `main`：Phase 0～8 已完成；原 Unity 原型迁移队列已完成
 - 已验证：Godot 4.7.2 下 `test_player_animation.gd` 为 72/72 通过，
   `test_town_map.gd` 为 35/35 通过，`test_tile_destructor.gd` 为 15/15 通过，
   `test_hook.gd` 为 24/24 通过，`test_teleport.gd` 为 25/25 通过，
-  `test_npc.gd` 为 23/23 通过，`test_water.gd` 为 11/11 通过。
+  `test_npc.gd` 为 23/23 通过，`test_water.gd` 为 11/11 通过，
+  `test_lighting.gd` 为 16/16 通过。
 - 不修改 `unity-app`；仅通过 `git show unity-app:<路径>` 读取其历史实现。
 
-## 下一阶段：Phase 8 — 2D 光照与视觉打磨
+## 当前状态
 
-- [ ] **8.1 场景光照**：核对 Unity Global Light 2D，设置城镇与旱魃场景环境光。
-- [ ] **8.2 点光源**：为玩家、火焰和传送圈接入 `PointLight2D`，保持可关闭。
-- [ ] **8.3 性能与视觉**：避免重复资源和大面积过度绘制，检查开关后无残留节点。
-- [ ] **8.4 验证**：增加光照无头测试，并回归 Phase 1～7。
+Phase 0～8 的迁移队列已经完成。后续战斗、敌人、技能、装备等属于新功能设计，
+不再作为 Unity 原型迁移任务自动推进。
 
 ## 后续迁移顺序
 

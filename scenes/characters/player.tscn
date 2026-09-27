@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3]
+[gd_scene load_steps=12 format=3]
 
 [ext_resource type="Script" path="res://scripts/player/player.gd" id="1_player"]
 [ext_resource type="Resource" path="res://resources/characters/player_stats.tres" id="2_stats"]
@@ -9,6 +9,7 @@
 [ext_resource type="Script" path="res://scripts/player/states/hook_throw_state.gd" id="7_hook_throw"]
 [ext_resource type="Script" path="res://scripts/player/states/hook_pull_state.gd" id="8_hook_pull"]
 [ext_resource type="Script" path="res://scripts/player/states/interact_state.gd" id="9_interact"]
+[ext_resource type="Texture2D" path="res://resources/lighting/soft_light.tres" id="10_light"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
 size = Vector2(24, 32)
@@ -42,6 +43,13 @@ limit_left = -1856
 limit_top = -1280
 limit_right = 2112
 limit_bottom = 640
+
+[node name="PointLight2D" type="PointLight2D" parent="."]
+position = Vector2(0, -24)
+scale = Vector2(1.25, 1.25)
+color = Color(1, 0.94, 0.78, 1)
+energy = 0.55
+texture = ExtResource("10_light")
 
 [node name="StateMachine" type="Node" parent="."]
 script = ExtResource("4_machine")

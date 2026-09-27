@@ -1,0 +1,495 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00000.png" id="1_lkbiv"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00001.png" id="2_3t0ce"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00002.png" id="3_w64ss"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00003.png" id="4_m3iri"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00004.png" id="5_pi3ol"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00005.png" id="6_2yos4"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00006.png" id="7_6vr5p"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00007.png" id="8_dy6ju"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00008.png" id="9_ppkcc"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00009.png" id="10_c7xj3"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00010.png" id="11_bnllb"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00011.png" id="12_juj6s"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00012.png" id="13_no1v3"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00013.png" id="14_dbhij"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00014.png" id="15_ve6pu"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00015.png" id="16_ynkm6"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00016.png" id="17_qt2hn"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00017.png" id="18_6ykbe"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00018.png" id="19_lfsoc"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00019.png" id="20_prmvd"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00020.png" id="21_h5wbx"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00021.png" id="22_mqp40"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00022.png" id="23_hjfcb"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00023.png" id="24_he8r0"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00024.png" id="25_dwwus"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00025.png" id="26_r40fi"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00026.png" id="27_1sshx"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00027.png" id="28_87e18"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00028.png" id="29_fd4x2"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00029.png" id="30_s1sbx"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00030.png" id="31_13v0u"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00031.png" id="32_5h1iy"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00032.png" id="33_yambq"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00033.png" id="34_4tq62"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00034.png" id="35_i5sba"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00035.png" id="36_getsj"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00036.png" id="37_jd3ir"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00037.png" id="38_obyy4"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00038.png" id="39_318jg"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00039.png" id="40_e00fg"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00040.png" id="41_xeyu7"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00041.png" id="42_rpmt1"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00042.png" id="43_dwckj"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00043.png" id="44_34wen"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00044.png" id="45_vr72u"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00045.png" id="46_fuum0"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00046.png" id="47_p4bvx"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00047.png" id="48_euc38"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00048.png" id="49_6y1mb"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00049.png" id="50_j0cvj"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00050.png" id="51_r2qcd"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00051.png" id="52_stlsb"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00052.png" id="53_gf2e8"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00053.png" id="54_qt4lo"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00054.png" id="55_qi8g3"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00055.png" id="56_f0j5w"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00056.png" id="57_tpm85"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00057.png" id="58_mtns1"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00058.png" id="59_8gont"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00059.png" id="60_k7waj"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00060.png" id="61_xtny6"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00061.png" id="62_yb5b8"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00062.png" id="63_1us2m"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00063.png" id="64_cltak"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00064.png" id="65_gmx0y"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00065.png" id="66_0jxs1"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00066.png" id="67_uk8o0"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00067.png" id="68_uubow"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00068.png" id="69_vqlo7"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00069.png" id="70_unx5h"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00070.png" id="71_v4022"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00071.png" id="72_56i1o"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00072.png" id="73_ujn8h"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00073.png" id="74_wkfga"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00074.png" id="75_8y0qr"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00075.png" id="76_tq2ll"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00076.png" id="77_84yet"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00077.png" id="78_4pour"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00078.png" id="79_etrbw"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00079.png" id="80_pq00h"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00080.png" id="81_lbj2o"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00081.png" id="82_0tyd5"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00082.png" id="83_qhuga"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00083.png" id="84_v4368"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00084.png" id="85_c2j1v"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00085.png" id="86_o3xtc"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00086.png" id="87_6tdon"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00087.png" id="88_j65ve"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00088.png" id="89_0yjyu"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00089.png" id="90_nqjpk"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00090.png" id="91_58ymy"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00091.png" id="92_xwtps"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00092.png" id="93_frga3"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00093.png" id="94_pjdm0"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00094.png" id="95_p1dbw"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00095.png" id="96_ncpmt"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00096.png" id="97_gkhch"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00097.png" id="98_c0m0e"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00098.png" id="99_oa0b4"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00099.png" id="100_u532b"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00100.png" id="101_76i80"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00101.png" id="102_hs4o4"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00102.png" id="103_qnk4f"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00103.png" id="104_7f6gp"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00104.png" id="105_0iaqy"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00105.png" id="106_sqtr3"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00106.png" id="107_1xr3o"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00107.png" id="108_vx0ve"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00108.png" id="109_u378k"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00109.png" id="110_sd0vy"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00110.png" id="111_0rijj"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00111.png" id="112_0hps7"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00112.png" id="113_s1h83"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00113.png" id="114_30ko7"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00114.png" id="115_da2lg"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00115.png" id="116_4reah"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00116.png" id="117_140v8"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00117.png" id="118_i8arl"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00118.png" id="119_5gqui"]
+[ext_resource type="Texture2D" path="res://assets/effects/fire/红焰_00119.png" id="120_2lm4g"]
+
+[resource]
+animations = [{
+"frames": [],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_lkbiv")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_3t0ce")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_w64ss")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_m3iri")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_pi3ol")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_2yos4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_6vr5p")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_dy6ju")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_ppkcc")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_c7xj3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_bnllb")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_juj6s")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_no1v3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_dbhij")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_ve6pu")
+}, {
+"duration": 1.0,
+"texture": ExtResource("16_ynkm6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("17_qt2hn")
+}, {
+"duration": 1.0,
+"texture": ExtResource("18_6ykbe")
+}, {
+"duration": 1.0,
+"texture": ExtResource("19_lfsoc")
+}, {
+"duration": 1.0,
+"texture": ExtResource("20_prmvd")
+}, {
+"duration": 1.0,
+"texture": ExtResource("21_h5wbx")
+}, {
+"duration": 1.0,
+"texture": ExtResource("22_mqp40")
+}, {
+"duration": 1.0,
+"texture": ExtResource("23_hjfcb")
+}, {
+"duration": 1.0,
+"texture": ExtResource("24_he8r0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("25_dwwus")
+}, {
+"duration": 1.0,
+"texture": ExtResource("26_r40fi")
+}, {
+"duration": 1.0,
+"texture": ExtResource("27_1sshx")
+}, {
+"duration": 1.0,
+"texture": ExtResource("28_87e18")
+}, {
+"duration": 1.0,
+"texture": ExtResource("29_fd4x2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("30_s1sbx")
+}, {
+"duration": 1.0,
+"texture": ExtResource("31_13v0u")
+}, {
+"duration": 1.0,
+"texture": ExtResource("32_5h1iy")
+}, {
+"duration": 1.0,
+"texture": ExtResource("33_yambq")
+}, {
+"duration": 1.0,
+"texture": ExtResource("34_4tq62")
+}, {
+"duration": 1.0,
+"texture": ExtResource("35_i5sba")
+}, {
+"duration": 1.0,
+"texture": ExtResource("36_getsj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("37_jd3ir")
+}, {
+"duration": 1.0,
+"texture": ExtResource("38_obyy4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("39_318jg")
+}, {
+"duration": 1.0,
+"texture": ExtResource("40_e00fg")
+}, {
+"duration": 1.0,
+"texture": ExtResource("41_xeyu7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("42_rpmt1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("43_dwckj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("44_34wen")
+}, {
+"duration": 1.0,
+"texture": ExtResource("45_vr72u")
+}, {
+"duration": 1.0,
+"texture": ExtResource("46_fuum0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("47_p4bvx")
+}, {
+"duration": 1.0,
+"texture": ExtResource("48_euc38")
+}, {
+"duration": 1.0,
+"texture": ExtResource("49_6y1mb")
+}, {
+"duration": 1.0,
+"texture": ExtResource("50_j0cvj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("51_r2qcd")
+}, {
+"duration": 1.0,
+"texture": ExtResource("52_stlsb")
+}, {
+"duration": 1.0,
+"texture": ExtResource("53_gf2e8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("54_qt4lo")
+}, {
+"duration": 1.0,
+"texture": ExtResource("55_qi8g3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("56_f0j5w")
+}, {
+"duration": 1.0,
+"texture": ExtResource("57_tpm85")
+}, {
+"duration": 1.0,
+"texture": ExtResource("58_mtns1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("59_8gont")
+}, {
+"duration": 1.0,
+"texture": ExtResource("60_k7waj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("61_xtny6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("62_yb5b8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("63_1us2m")
+}, {
+"duration": 1.0,
+"texture": ExtResource("64_cltak")
+}, {
+"duration": 1.0,
+"texture": ExtResource("65_gmx0y")
+}, {
+"duration": 1.0,
+"texture": ExtResource("66_0jxs1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("67_uk8o0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("68_uubow")
+}, {
+"duration": 1.0,
+"texture": ExtResource("69_vqlo7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("70_unx5h")
+}, {
+"duration": 1.0,
+"texture": ExtResource("71_v4022")
+}, {
+"duration": 1.0,
+"texture": ExtResource("72_56i1o")
+}, {
+"duration": 1.0,
+"texture": ExtResource("73_ujn8h")
+}, {
+"duration": 1.0,
+"texture": ExtResource("74_wkfga")
+}, {
+"duration": 1.0,
+"texture": ExtResource("75_8y0qr")
+}, {
+"duration": 1.0,
+"texture": ExtResource("76_tq2ll")
+}, {
+"duration": 1.0,
+"texture": ExtResource("77_84yet")
+}, {
+"duration": 1.0,
+"texture": ExtResource("78_4pour")
+}, {
+"duration": 1.0,
+"texture": ExtResource("79_etrbw")
+}, {
+"duration": 1.0,
+"texture": ExtResource("80_pq00h")
+}, {
+"duration": 1.0,
+"texture": ExtResource("81_lbj2o")
+}, {
+"duration": 1.0,
+"texture": ExtResource("82_0tyd5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("83_qhuga")
+}, {
+"duration": 1.0,
+"texture": ExtResource("84_v4368")
+}, {
+"duration": 1.0,
+"texture": ExtResource("85_c2j1v")
+}, {
+"duration": 1.0,
+"texture": ExtResource("86_o3xtc")
+}, {
+"duration": 1.0,
+"texture": ExtResource("87_6tdon")
+}, {
+"duration": 1.0,
+"texture": ExtResource("88_j65ve")
+}, {
+"duration": 1.0,
+"texture": ExtResource("89_0yjyu")
+}, {
+"duration": 1.0,
+"texture": ExtResource("90_nqjpk")
+}, {
+"duration": 1.0,
+"texture": ExtResource("91_58ymy")
+}, {
+"duration": 1.0,
+"texture": ExtResource("92_xwtps")
+}, {
+"duration": 1.0,
+"texture": ExtResource("93_frga3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("94_pjdm0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("95_p1dbw")
+}, {
+"duration": 1.0,
+"texture": ExtResource("96_ncpmt")
+}, {
+"duration": 1.0,
+"texture": ExtResource("97_gkhch")
+}, {
+"duration": 1.0,
+"texture": ExtResource("98_c0m0e")
+}, {
+"duration": 1.0,
+"texture": ExtResource("99_oa0b4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("100_u532b")
+}, {
+"duration": 1.0,
+"texture": ExtResource("101_76i80")
+}, {
+"duration": 1.0,
+"texture": ExtResource("102_hs4o4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("103_qnk4f")
+}, {
+"duration": 1.0,
+"texture": ExtResource("104_7f6gp")
+}, {
+"duration": 1.0,
+"texture": ExtResource("105_0iaqy")
+}, {
+"duration": 1.0,
+"texture": ExtResource("106_sqtr3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("107_1xr3o")
+}, {
+"duration": 1.0,
+"texture": ExtResource("108_vx0ve")
+}, {
+"duration": 1.0,
+"texture": ExtResource("109_u378k")
+}, {
+"duration": 1.0,
+"texture": ExtResource("110_sd0vy")
+}, {
+"duration": 1.0,
+"texture": ExtResource("111_0rijj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("112_0hps7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("113_s1h83")
+}, {
+"duration": 1.0,
+"texture": ExtResource("114_30ko7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("115_da2lg")
+}, {
+"duration": 1.0,
+"texture": ExtResource("116_4reah")
+}, {
+"duration": 1.0,
+"texture": ExtResource("117_140v8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("118_i8arl")
+}, {
+"duration": 1.0,
+"texture": ExtResource("119_5gqui")
+}, {
+"duration": 1.0,
+"texture": ExtResource("120_2lm4g")
+}],
+"loop": 1,
+"name": &"fire",
+"speed": 24.0
+}]
