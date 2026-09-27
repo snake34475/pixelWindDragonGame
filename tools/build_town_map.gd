@@ -8,6 +8,7 @@ const JSON_PATH := "res://resources/world/town_map.json"
 const PACKED_PNG := "res://assets/environment/tiles/town_tiles.png"
 const TILESET_PATH := "res://resources/world/town_tileset.tres"
 const SCENE_PATH := "res://scenes/levels/town_map.tscn"
+const WATER_ZONE_SCRIPT := preload("res://scripts/world/water_zone.gd")
 
 ## TileSet 的物理层 0 绑到 1 world，与 MIGRATION_PLAN §12.1 一致。
 const PHYSICS_LAYER_WORLD := 1
@@ -210,7 +211,9 @@ func _make_zone(z: Dictionary) -> Area2D:
 	area.name = _sanitize(String(z["name"]))
 	area.position = _vec(z["pos"])
 	area.collision_layer = int(z["collision_layer"])
-	area.collision_mask = 0
+	if String(z["kind"]) == "pond":
+		area.collision_mask = 2
+		area.set_script(WATER_ZONE_SCRIPT)
 	area.add_child(_make_sprite(z))
 	area.add_child(_make_collider(z))
 	return area

@@ -172,8 +172,10 @@ func _run() -> void:
 		"实际 %d" % zones.get_child_count())
 	var pond: Node = zones.get_child(0) if want_zones > 0 else null
 	_check("池塘是 Area2D（不阻挡玩家）", pond is Area2D)
-	_check("池塘碰撞层 = 7 pond", pond != null and pond.collision_layer == 7,
+	_check("池塘碰撞层 = 64 pond", pond != null and pond.collision_layer == 64,
 		"实际 %d" % (pond.collision_layer if pond else -1))
+	_check("池塘检测玩家层", pond != null and pond.collision_mask == 2,
+		"实际 %d" % (pond.collision_mask if pond else -1))
 
 	# 道具碰撞层：树木/朱门必须含 1 world（否则挡不住玩家）
 	var tree_layers := {}

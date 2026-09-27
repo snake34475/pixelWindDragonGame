@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" path="res://assets/environment/props/朱门.png" id="4_xis4d"]
 [ext_resource type="Texture2D" path="res://assets/environment/tiles/rpg各种树木游戏素材-植物-工厂改装_2(plant re_爱给网_aigei_com.png" id="5_fdbpu"]
 [ext_resource type="Texture2D" path="res://assets/environment/props/池塘.png" id="6_u3l7x"]
+[ext_resource type="Script" path="res://scripts/world/water_zone.gd" id="7_water"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0242l"]
 size = Vector2(687.36, 53.76)
@@ -278,8 +279,9 @@ y_sort_enabled = true
 
 [node name="池塘" type="Area2D" parent="Zones" unique_id=273634969]
 position = Vector2(1418.88, -636.8)
-collision_layer = 7
-collision_mask = 0
+collision_layer = 64
+collision_mask = 2
+script = ExtResource("7_water")
 
 [node name="Sprite2D" type="Sprite2D" parent="Zones/池塘" unique_id=248718328]
 scale = Vector2(2, 2)

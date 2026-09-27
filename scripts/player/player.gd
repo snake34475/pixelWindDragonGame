@@ -35,6 +35,9 @@ var active_hook: Hook
 var hook_anchor: Vector2 = Vector2.ZERO
 var active_npc: Npc
 var input_locked := false
+var is_swimming := false
+var _water_zone_count := 0
+var _normal_modulate := Color.WHITE
 
 var _last_tap_direction: Vector2 = Vector2.ZERO
 var _last_tap_time: float = -1.0
@@ -48,6 +51,7 @@ func _ready() -> void:
 	if stats == null:
 		push_warning("Player: 未指定 PlayerStatsData，回退到默认数值。")
 		stats = PlayerStatsData.new()
+	_normal_modulate = animated_sprite.modulate
 	state_machine.start()
 
 
@@ -104,6 +108,26 @@ func finish_interaction() -> void:
 	active_npc = null
 	if state_machine.current_state != null and state_machine.current_state.name == &"InteractState":
 		state_machine.change_state(&"IdleState")
+
+
+## 支持多个水域重叠；只有全部离开后才恢复正常表现。
+func enter_water() -> void:
+	_water_zone_count += 1
+	_apply_water_state()
+
+
+func exit_water() -> void:
+	_water_zone_count = maxi(_water_zone_count - 1, 0)
+	_apply_water_state()
+
+
+func water_zone_count() -> int:
+	return _water_zone_count
+
+
+func _apply_water_state() -> void:
+	is_swimming = _water_zone_count > 0
+	animated_sprite.modulate = Color(0.72, 0.86, 1.0, 0.75) if is_swimming else _normal_modulate
 
 
 ## 当前移动速度：加速中走 run_speed，否则 walk_speed。
