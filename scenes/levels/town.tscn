@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/characters/player.tscn" id="1_player"]
 [ext_resource type="PackedScene" path="res://scenes/levels/town_map.tscn" id="2_town_map"]
+[ext_resource type="Script" path="res://scripts/world/tile_destructor.gd" id="3_destructor"]
 
 [node name="Town" type="Node2D"]
 
@@ -23,6 +24,11 @@ y_sort_enabled = true
 y_sort_enabled = true
 
 [node name="Player" parent="World/Entities" instance=ExtResource("1_player")]
+
+[node name="TileDestructor" type="Node" parent="World"]
+script = ExtResource("3_destructor")
+player_path = NodePath("../Entities/Player")
+obstacles_path = NodePath("../TownMap/Obstacles")
 
 [node name="Lighting" type="CanvasModulate" parent="."]
 

@@ -241,18 +241,28 @@ Y-sort 基准点 = **脚底**：`AnimatedSprite2D.offset = (0, -34.5)`（帧高 
 
 两个 SceneTree 无头测试，退出码 `0` = 全部通过、`1` = 有失败项。
 
+本机 Godot 位于 `/Applications/Godot.app/Contents/MacOS/Godot`；若已将 Godot
+加入 `PATH`，可将下列命令中的完整路径替换为 `godot`。
+
 **Phase 1 — 玩家动画**（72 项）：场景加载、5 个动画的帧数/尺寸/FPS、四方向移动、
 停止切回 Idle、双击奔跑、左右 `flip_h`、动画不逐帧重启。
 
 ```bash
-godot --headless --path . --script res://tests/test_player_animation.gd
+/Applications/Godot.app/Contents/MacOS/Godot --headless --path . --script res://tests/test_player_animation.gd
 ```
 
 **Phase 2 — 瓦片世界**（35 项）：场景结构、`y_sort_enabled`、地面/障碍格数与 atlas 坐标、
 障碍碰撞层与物理多边形、空间点查询、道具与池塘区域、玩家被障碍挡住。
 
 ```bash
-godot --headless --path . --script res://tests/test_town_map.gd
+/Applications/Godot.app/Contents/MacOS/Godot --headless --path . --script res://tests/test_town_map.gd
+```
+
+**Phase 3 — 石障破坏**（15 项）：玩家前方目标格计算、石障清除、非石障无副作用、
+碎石特效生成定位、7 帧贴图加载与自动回收。
+
+```bash
+/Applications/Godot.app/Contents/MacOS/Godot --headless --path . --script res://tests/test_tile_destructor.gd
 ```
 
 > 无头环境下 `Input.action_press` 需要至少 1 个物理帧才会被
@@ -286,9 +296,10 @@ godot --headless --path . --script res://tests/test_town_map.gd
 | `Assets/img/role/dragin/背身走路.psb` | `assets/characters/dragon/walk_up/`（3 帧） | ✅ 已导出 |
 | `Assets/img/role/dragin/走路.psb` | `assets/characters/dragon/walk_side/`（4 帧） | ✅ 已导出 |
 | `Assets/img/role/dragin/跑路6帧.psb` | `assets/characters/dragon/run/`（6 帧） | ✅ 已导出 |
-| `Assets/img/map/地面素材/碎石动画.psb` | `assets/effects/stone_break/` | ⏭ 待 Phase 3 导出 |
+| `Assets/img/map/地面素材/碎石动画.psb` | `assets/effects/stone_break/`（7 帧） | ✅ 已导出并接入 |
 
-导出约定：帧宽一致、帧序从左到右、背景透明（RGBA）、保持原始像素尺寸不做缩放。
+碎石当前由桌面素材文件夹提供 7 帧，文件名 `7.png`（完整石头）至 `1.png`（碎裂残片）；
+Godot 场景按 `7 → 1` 播放。各帧保持原始尺寸与透明通道，在场景中按 ×2 缩放匹配 64px 世界格。
 
 > 环境说明：本机 macOS 的 `sips` 能读取 PSB 并导出扁平化 PNG，但实测各图层在画布上
 > 位置不规则（例如 `走路.psb` 只有 3 个可见图形、`背身走路.psb` 只有 2 个，
@@ -296,12 +307,15 @@ godot --headless --path . --script res://tests/test_town_map.gd
 
 ### 开发进度
 
+Phase 3 基于 `7e20afe`（`feat: add tilemap world`）继续开发。2026-09-27 已用 Godot
+4.7.2 重新验证：Phase 1 测试 72/72、Phase 2 测试 35/35、Phase 3 测试 15/15，均通过。
+
 - ✅ **Phase 0**：Godot 基础骨架（项目配置、Input Map、物理层、目录结构、GameManager、town 空场景、Player 骨架 + Idle/Move 状态机、素材整理）
 - ✅ **Phase 1**：玩家移动与动画（四向 facing、`AnimatedSprite2D` + 5 组真实动画帧、walk/run、双击加速、`Camera2D` 平滑跟随 + limit、左右 `flip_h`）
 - ✅ **Phase 2**：瓦片世界 + 碰撞（Unity 地形/道具脚本还原 → `town_map.tscn`、TileSet + TileMapLayer、Y-sort 遮挡、障碍与道具碰撞、池塘 Area2D）
-- ⏭ **Phase 3**：石头破坏（Q）
+- ✅ **Phase 3**：石头破坏（Q）（前方格检测、Tile 与碰撞清除、7 帧碎石动画、自动回收；15 项无头测试）
 
-完整规划见 `MIGRATION_PLAN.md`。
+下一步与阻塞项见 [TODO.md](TODO.md)。完整迁移设计与 Unity 侧证据见 `MIGRATION_PLAN.md`；已完成阶段的实施复盘放在 `.trae/documents/`。
 
 ---
 
@@ -320,3 +334,6 @@ Unity 侧的关键实现信息（供迁移参考）：
 - 入水表现：`Assets/c#/mapItem/Swimming.cs`（`SpriteMaskInteraction.VisibleInsideMask`）
 - 场景切换 / 跨场景单例：`Assets/c#/checkoutScence.cs`、`Assets/c#/keep.cs`
 - 场景：`Assets/Scenes/SampleScene.unity`、`Assets/场景/旱魃图.unity`
+
+> 当前 Unity 分支可确认的是城镇探索原型：移动、炸石、钩爪、传送、NPC 对话和入水表现。
+> 未发现普攻、技能、敌人 AI、装备或掉落系统的游戏代码；这些属于未来新功能，而非现有迁移范围。

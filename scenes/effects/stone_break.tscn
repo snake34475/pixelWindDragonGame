@@ -1,0 +1,26 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://scripts/effects/stone_break.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/effects/stone_break/stone_break_07.png" id="2_07"]
+[ext_resource type="Texture2D" path="res://assets/effects/stone_break/stone_break_06.png" id="3_06"]
+[ext_resource type="Texture2D" path="res://assets/effects/stone_break/stone_break_05.png" id="4_05"]
+[ext_resource type="Texture2D" path="res://assets/effects/stone_break/stone_break_04.png" id="5_04"]
+[ext_resource type="Texture2D" path="res://assets/effects/stone_break/stone_break_03.png" id="6_03"]
+[ext_resource type="Texture2D" path="res://assets/effects/stone_break/stone_break_02.png" id="7_02"]
+[ext_resource type="Texture2D" path="res://assets/effects/stone_break/stone_break_01.png" id="8_01"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_stone_break"]
+animations = [{
+"frames": [{"duration": 1.0, "texture": ExtResource("2_07")}, {"duration": 1.0, "texture": ExtResource("3_06")}, {"duration": 1.0, "texture": ExtResource("4_05")}, {"duration": 1.0, "texture": ExtResource("5_04")}, {"duration": 1.0, "texture": ExtResource("6_03")}, {"duration": 1.0, "texture": ExtResource("7_02")}, {"duration": 1.0, "texture": ExtResource("8_01")}],
+"loop": false,
+"name": &"break",
+"speed": 12.0
+}]
+
+[node name="StoneBreak" type="Node2D"]
+scale = Vector2(2, 2)
+script = ExtResource("1_script")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_stone_break")
+animation = &"break"

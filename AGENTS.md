@@ -163,4 +163,12 @@ D 的所有相关资源
 
 * `main`：Godot 4 主开发工程；`unity-app`：旧 Unity 工程，**仅作历史参考，禁止修改**。
 * `unity-app` 分支**不会被 checkout**，读取其文件必须用 `git show unity-app:<路径>`；批量列举用 `git -c core.quotepath=false ls-tree -r --name-only unity-app`。
-* 详细迁移路线见 `MIGRATION_PLAN.md`，阶段性设计见 `.trae/documents/`。
+* 运行态与下一步工作以 `README.md` 和 `TODO.md` 为准；`MIGRATION_PLAN.md` 是迁移设计与历史证据，阶段性设计/复盘放在 `.trae/documents/`。
+
+## 文档维护约定
+
+* 实现、测试或迁移阶段完成后，同一变更必须更新 `README.md` 的「开发进度」与 `TODO.md`；不要只更新其中一个。
+* `TODO.md` 只列未完成、阻塞或待决事项。完成项应移入 `README.md` 的进度摘要或对应的阶段复盘，避免待办列表变成历史日志。
+* 文档中的状态必须能由当前 `main` 的文件、提交或测试复现。无法复验的内容标注为「待确认」，不要写成已完成。
+* 每项阻塞都要写清楚：缺少什么、是否阻塞逻辑实现、由谁提供或决定。素材表现层的阻塞不得阻止可独立完成的逻辑工作。
+* 不要把本仓库不存在的 Unity 功能（例如战斗、装备、掉落）写成已迁移范围；是否存在以 `unity-app` 的实际代码和场景为准。
