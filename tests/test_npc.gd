@@ -53,32 +53,21 @@ func _run() -> void:
 	_check("NPC walk_side 动画为 4 帧", sprite.sprite_frames.get_frame_count(&"walk_side") == 4)
 
 	npc.collision_mask = 0
-	npc.speed = 64.0
-	npc.wander_interval = 0.1
-	npc.global_position = Vector2(5000, 5000)
-	var start_x := npc.global_position.x
-	for i in 5:
-		await physics_frame
-	_check("NPC 会水平游荡", npc.global_position.x > start_x,
-		"start=%.1f now=%.1f" % [start_x, npc.global_position.x])
-	var saw_reverse := false
+	npc.global_position = Vector2(80, 0)
+	player.global_position = Vector2.ZERO
+	var fixed_position := npc.global_position
 	for i in 10:
 		await physics_frame
-		saw_reverse = saw_reverse or npc.direction == -1
-	_check("NPC 到达换向周期后反向", saw_reverse, "direction=%d" % npc.direction)
-
-	npc.speed = 0.0
-	npc.direction = 1
+	_check("NPC 固定站位不移动", npc.global_position.is_equal_approx(fixed_position),
+		"before=%s after=%s" % [fixed_position, npc.global_position])
+	_check("玩家在左侧时 NPC 朝左", sprite.flip_h == false)
+	player.global_position = Vector2(160, 0)
 	await physics_frame
-	_check("NPC 向右时精灵翻转", sprite.flip_h == true)
-	npc.direction = -1
 	await physics_frame
-	_check("NPC 向左时精灵不翻转", sprite.flip_h == false)
-	npc.direction = 1
-	await physics_frame
-	npc.global_position = Vector2(80, 0)
-	npc.dialog_duration = 0.15
+	_check("玩家在右侧时 NPC 朝右", sprite.flip_h == true)
 	player.global_position = Vector2.ZERO
+	await physics_frame
+	npc.dialog_duration = 0.15
 	player.facing = Vector2.RIGHT
 	player.state_machine.change_state(&"IdleState")
 	await physics_frame
@@ -86,6 +75,7 @@ func _run() -> void:
 
 	_check("玩家朝 NPC 按交互可以命中", interactor.try_interact())
 	_check("NPC 进入对话状态", npc.is_talking)
+	_check("NPC 对话时播放 idle", sprite.animation == &"idle")
 	_check("玩家进入 InteractState", player.state_machine.current_state.name == &"InteractState")
 	_check("对话期间玩家输入锁定", player.input_locked)
 	_check("对话框已显示", dialog.visible)
@@ -107,7 +97,8 @@ func _run() -> void:
 			break
 		await physics_frame
 	_check("对话框到时自动关闭", not dialog.visible)
-	_check("对话结束后 NPC 恢复游荡", not npc.is_talking)
+	_check("对话结束后 NPC 解除对话且保持固定", not npc.is_talking
+		and npc.global_position.is_equal_approx(fixed_position))
 	_check("对话结束后玩家恢复 IdleState", player.state_machine.current_state.name == &"IdleState")
 	_check("对话结束后解除输入锁定", not player.input_locked)
 

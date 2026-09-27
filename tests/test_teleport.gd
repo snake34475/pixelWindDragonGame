@@ -64,6 +64,9 @@ func _run() -> void:
 	_check("城镇出生点位于传送圈上方 1 格",
 		town_marker.global_position.is_equal_approx(town_ring.global_position + Vector2(0, -64)),
 		"marker=%s ring=%s" % [town_marker.global_position, town_ring.global_position])
+	var obstacle_overlap := _ring_obstacle_overlap(
+		town_ring, town.get_node_or_null("World/TownMap/Obstacles") as TileMapLayer)
+	_check("城镇传送圈视觉范围不压石障", obstacle_overlap.is_empty(), obstacle_overlap)
 
 	var requested := [false]
 	town_ring.teleport_requested.connect(func(_scene_path: String, _spawn: StringName) -> void:
@@ -113,6 +116,28 @@ func _wait_for_scene(scene_path: String) -> Node:
 			return current_scene
 		await process_frame
 	return null
+
+
+## 返回第一个与传送圈整张精灵相交的石障格；无重叠时返回空字符串。
+func _ring_obstacle_overlap(ring: TeleportRing, obstacles: TileMapLayer) -> String:
+	if ring == null or obstacles == null:
+		return "TeleportRing 或 Obstacles 缺失"
+	var sprite := ring.get_node_or_null("AnimatedSprite2D") as AnimatedSprite2D
+	if sprite == null or sprite.sprite_frames == null:
+		return "传送圈 SpriteFrames 缺失"
+	var texture := sprite.sprite_frames.get_frame_texture(sprite.animation, 0)
+	if texture == null:
+		return "传送圈首帧贴图缺失"
+	var visual_size := Vector2(
+		texture.get_width() * absf(sprite.scale.x),
+		texture.get_height() * absf(sprite.scale.y))
+	var visual_rect := Rect2(ring.global_position - visual_size / 2.0, visual_size)
+	for cell in obstacles.get_used_cells():
+		var center := obstacles.to_global(obstacles.map_to_local(cell))
+		var cell_rect := Rect2(center - Vector2(32, 32), Vector2(64, 64))
+		if visual_rect.intersects(cell_rect):
+			return "与石障格 %s 相交" % cell
+	return ""
 
 
 func _finish() -> void:

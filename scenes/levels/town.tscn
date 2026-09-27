@@ -43,10 +43,10 @@ script = ExtResource("4_spawn_manager")
 player_path = NodePath("../Entities/Player")
 
 [node name="town_arrival" type="Marker2D" parent="World/SpawnPoints"]
-position = Vector2(1772.288, 149.12)
+position = Vector2(1696, 149.12)
 
 [node name="TeleportRing" parent="World" instance=ExtResource("5_teleport_ring")]
-position = Vector2(1772.288, 213.12)
+position = Vector2(1696, 213.12)
 target_scene_path = "res://scenes/levels/hanba_map.tscn"
 target_spawn_point = &"hanba_arrival"
 

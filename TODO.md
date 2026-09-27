@@ -12,9 +12,9 @@
 ## 当前基线
 
 - `main`：Phase 0～8 已完成；原 Unity 原型迁移队列已完成
-- 已验证：Godot 4.7.2 下 `test_player_animation.gd` 为 78/78 通过，
+- 已验证：Godot 4.7.2 下 `test_player_animation.gd` 为 81/81 通过，
   `test_town_map.gd` 为 36/36 通过，`test_tile_destructor.gd` 为 15/15 通过，
-  `test_hook.gd` 为 24/24 通过，`test_teleport.gd` 为 25/25 通过，
+  `test_hook.gd` 为 24/24 通过，`test_teleport.gd` 为 26/26 通过，
   `test_npc.gd` 为 25/25 通过，`test_water.gd` 为 11/11 通过，
   `test_lighting.gd` 为 16/16 通过。
 - 不修改 `unity-app`；仅通过 `git show unity-app:<路径>` 读取其历史实现。
@@ -28,7 +28,7 @@ Phase 0～8 的迁移队列已经完成。后续战斗、敌人、技能、装�
 
 ## 已知非阻塞项
 
-- [ ] 完整还原旱魃地图地形；当前 `hanba_map.tscn` 是最小可运行场景，不阻塞 Phase 8。
+- [ ] 完整还原旱魃地图地形；当前 `hanba_map.tscn` 是最小可运行场景且没有石障层，不阻塞 Phase 8。
 
 ## 不在当前迁移范围
 
