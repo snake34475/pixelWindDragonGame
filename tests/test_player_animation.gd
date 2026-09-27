@@ -106,16 +106,20 @@ func _run() -> void:
 	_check("AnimatedSprite2D 存在", _sprite != null)
 	_check("CollisionShape2D 存在", _player.get_node_or_null("CollisionShape2D") != null)
 	_check("Camera2D 存在", _player.get_node_or_null("Camera2D") != null)
+	var camera := _player.get_node_or_null("Camera2D") as Camera2D
+	_check("Camera2D 缩放 = 2/3", camera != null
+		and camera.zoom.is_equal_approx(Vector2(0.6666667, 0.6666667)),
+		"实际 %s" % (camera.zoom if camera != null else Vector2.ZERO))
 	_check("StateMachine 存在", _player.state_machine != null)
 	var viewport_width := int(ProjectSettings.get_setting("display/window/size/viewport_width"))
 	var viewport_height := int(ProjectSettings.get_setting("display/window/size/viewport_height"))
 	var window_width := int(ProjectSettings.get_setting("display/window/size/window_width_override"))
 	var window_height := int(ProjectSettings.get_setting("display/window/size/window_height_override"))
-	_check("内部视口 = 640x360", viewport_width == 640 and viewport_height == 360,
+	_check("内部视口 = 960x540", viewport_width == 960 and viewport_height == 540,
 		"实际 %dx%d" % [viewport_width, viewport_height])
 	_check("窗口覆盖尺寸 = 1920x1080", window_width == 1920 and window_height == 1080,
 		"实际 %dx%d" % [window_width, window_height])
-	_check("整数缩放 = 3x", window_width / viewport_width == 3 and window_height / viewport_height == 3,
+	_check("整数缩放 = 2x", window_width / viewport_width == 2 and window_height / viewport_height == 2,
 		"实际 %.2fx" % (float(window_width) / viewport_width))
 	if _sprite == null:
 		_finish()

@@ -24,7 +24,7 @@
 | --- | --- |
 | 引擎 | Godot 4.7.x；当前在 `4.7.2` 完成全量验证（`config/features = ("4.7", "GL Compatibility")`） |
 | 渲染后端 | `gl_compatibility` |
-| 基准分辨率 | 640 × 360，窗口 1920 × 1080（3 倍整数缩放） |
+| 基准分辨率 | 960 × 540，窗口 1920 × 1080（2 倍整数缩放） |
 | 拉伸 | `canvas_items` + `keep` 宽高比 + `integer` 缩放（像素对齐） |
 | 纹理过滤 | Nearest（`default_texture_filter = 0`） |
 | 瓦片尺寸 | 64 px（石障源图为 32 px，接入时按 ×2 缩放） |
@@ -177,6 +177,8 @@ Player (CharacterBody2D)
 
 ### Camera2D（Phase 1）
 
+- `zoom = (0.6666667, 0.6666667)`，镜头相对默认视野后拉；可视世界范围扩大
+  `1.5 倍`，参照物在屏幕上的比例缩小为 `2/3`
 - `position_smoothing_enabled = true`，`position_smoothing_speed = 8`
 - `drag_horizontal_enabled` / `drag_vertical_enabled = true`，margin `0.1`
 - `limit_left / top / right / bottom = -1856 / -1280 / 2112 / 640`
@@ -255,7 +257,7 @@ Y-sort 基准点 = **脚底**：`AnimatedSprite2D.offset = (0, -34.5)`（帧高 
 本机 Godot 位于 `/Applications/Godot.app/Contents/MacOS/Godot`；若已将 Godot
 加入 `PATH`，可将下列命令中的完整路径替换为 `godot`。
 
-**Phase 1 — 玩家动画**（81 项）：场景加载、窗口 1920 × 1080 与 3 倍整数缩放、
+**Phase 1 — 玩家动画**（82 项）：场景加载、窗口 1920 × 1080 与 2 倍整数缩放、
 5 个动画的帧数/尺寸/FPS、四方向移动、停止切回 Idle、双击奔跑、奔跑中变向、
 左右 `flip_h`、动画不逐帧重启。
 
@@ -365,7 +367,7 @@ Godot 场景按 `7 → 1` 播放。各帧保持原始尺寸与透明通道，在
 ### 开发进度
 
 Phase 8 基于 `3587c48`（`feat: add pond swimming state`）继续开发。2026-09-27 已用
-Godot 4.7.2 重新验证：Phase 1 测试 81/81、Phase 2 测试 36/36、Phase 3 测试 15/15、
+Godot 4.7.2 重新验证：Phase 1 测试 82/82、Phase 2 测试 36/36、Phase 3 测试 15/15、
 Phase 4 测试 24/24、Phase 5 测试 26/26、Phase 6 测试 25/25、Phase 7 测试 11/11，
 Phase 8 测试 16/16，均通过。
 
