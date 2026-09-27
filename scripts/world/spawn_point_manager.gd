@@ -25,3 +25,4 @@ func _apply_requested_spawn_point() -> void:
 		return
 	player.velocity = Vector2.ZERO
 	player.global_position = marker.global_position
+	player.reset_movement_input()

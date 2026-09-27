@@ -97,12 +97,18 @@ tests/                       无头测试（SceneTree 脚本，退出码 0 = 通
 | 奔跑 | 0.5 秒内双击同一方向并保持按住 | 使用 run 速度；奔跑中改变方向仍保持，全部方向松开后退出 |
 | 炸石 | `Q` | 清除玩家朝向前方的石障并播放碎石特效；目标不是石障时无效果 |
 | 钩爪 | 按住 `E`，再点击鼠标左键 | 朝鼠标世界坐标发射飞钩；命中 `eaves` 后把玩家拉向命中点，未命中或超程时回收 |
-| 传送 | 走进传送圈 | 在城镇与旱魃地图之间切换，并落到目标出生点 |
+| 传送 | 走进传送圈 | 在城镇与旱魃地图之间切换；落地后移动键必须先全部松开再重新按下 |
 | NPC 交互 | 朝向 NPC 按 `C` | 佟湘玉固定站位并面向玩家；弹出对话框，3 秒后自动关闭，期间 NPC 停止行动 |
 | 入水 | 走进池塘 | 玩家变为偏蓝半透明；离开后恢复，池塘不阻挡移动 |
 
 当前未实现：战斗、技能、装备、掉落、背包和存档。
 这些能力不会因为按键已存在就视为可玩功能。
+
+传送圈不是 `town_map.tscn` 的生成内容，而是分别放在
+`Town/World/TeleportRing` 与 `HanbaMap/World/TeleportRing`。两个节点实例化自
+`scenes/effects/teleport_ring.tscn`：根节点是 `Area2D`，地面圆环由子节点
+`AnimatedSprite2D` 表现，触发碰撞体和点光源跟随地面圆环位置。落地由
+`SpawnPointManager` 消费 `Marker2D` 后调用 `Player.reset_movement_input()`。
 
 ### 物理层（Project Settings → Layer Names → 2D Physics）
 
@@ -257,7 +263,7 @@ Y-sort 基准点 = **脚底**：`AnimatedSprite2D.offset = (0, -34.5)`（帧高 
 本机 Godot 位于 `/Applications/Godot.app/Contents/MacOS/Godot`；若已将 Godot
 加入 `PATH`，可将下列命令中的完整路径替换为 `godot`。
 
-**Phase 1 — 玩家动画**（82 项）：场景加载、窗口 1920 × 1080 与 2 倍整数缩放、
+**Phase 1 — 玩家动画**（87 项）：场景加载、窗口 1920 × 1080 与 2 倍整数缩放、
 5 个动画的帧数/尺寸/FPS、四方向移动、停止切回 Idle、双击奔跑、奔跑中变向、
 左右 `flip_h`、动画不逐帧重启。
 
@@ -286,8 +292,9 @@ Y-sort 基准点 = **脚底**：`AnimatedSprite2D.offset = (0, -34.5)`（帧高 
 /Applications/Godot.app/Contents/MacOS/Godot --headless --path . --script res://tests/test_hook.gd
 ```
 
-**Phase 5 — 传送圈 / 多场景**（26 项）：25 帧传送圈资源、`teleport` 物理层、
-一次性切换保护、城镇传送圈避开石障、城镇与旱魃地图双向传送、目标出生点及传送圈上方 1 格偏移。
+**Phase 5 — 传送圈 / 多场景**（30 项）：25 帧传送圈资源、`teleport` 物理层、
+一次性切换保护、触发区贴合地面圆环、城镇传送圈避开石障、城镇与旱魃地图双向传送、
+落地输入重置与持续按键防循环、目标出生点及传送圈上方 1 格偏移。
 
 ```bash
 /Applications/Godot.app/Contents/MacOS/Godot --headless --path . --script res://tests/test_teleport.gd
@@ -367,8 +374,8 @@ Godot 场景按 `7 → 1` 播放。各帧保持原始尺寸与透明通道，在
 ### 开发进度
 
 Phase 8 基于 `3587c48`（`feat: add pond swimming state`）继续开发。2026-09-27 已用
-Godot 4.7.2 重新验证：Phase 1 测试 82/82、Phase 2 测试 36/36、Phase 3 测试 15/15、
-Phase 4 测试 24/24、Phase 5 测试 26/26、Phase 6 测试 25/25、Phase 7 测试 11/11，
+Godot 4.7.2 重新验证：Phase 1 测试 87/87、Phase 2 测试 36/36、Phase 3 测试 15/15、
+Phase 4 测试 24/24、Phase 5 测试 30/30、Phase 6 测试 25/25、Phase 7 测试 11/11，
 Phase 8 测试 16/16，均通过。
 
 - ✅ **Phase 0**：Godot 基础骨架（项目配置、Input Map、物理层、目录结构、GameManager、town 空场景、Player 骨架 + Idle/Move 状态机、素材整理）
@@ -376,7 +383,7 @@ Phase 8 测试 16/16，均通过。
 - ✅ **Phase 2**：瓦片世界 + 碰撞（Unity 地形/道具脚本还原 → `town_map.tscn`、TileSet + TileMapLayer、Y-sort 遮挡、障碍与道具碰撞、池塘 Area2D）
 - ✅ **Phase 3**：石头破坏（Q）（前方格检测、Tile 与碰撞清除、7 帧碎石动画、自动回收；15 项无头测试）
 - ✅ **Phase 4**：飞钩 / 钩爪（E + 左键）（鼠标世界坐标、`eaves` 物理层命中、信号驱动 `HookThrowState` / `HookPullState`、拉拽期间移动锁定；24 项无头测试）
-- ✅ **Phase 5**：传送圈与多场景（25 帧动画、`Area2D` 触发、一次性出生点、城镇传送圈避开石障、城镇 ↔ 旱魃地图双向切换；26 项无头测试）
+- ✅ **Phase 5**：传送圈与多场景（25 帧动画、地面圆环触发、一次性出生点、落地输入重置、城镇传送圈避开石障、城镇 ↔ 旱魃地图双向切换；30 项无头测试）
 - ✅ **Phase 6**：NPC 与对话框（佟湘玉固定站位并面向玩家、`C` 射线交互、玩家输入锁定、3 秒自动关闭；25 项无头测试）
 - ✅ **Phase 7**：水域表现（池塘检测玩家、入水偏蓝半透明、离开恢复、重叠计数防残留；11 项无头测试）
 - ✅ **Phase 8**：2D 光照（城镇环境光、玩家/传送圈/火焰点光源、120 帧火焰动画；16 项无头测试）

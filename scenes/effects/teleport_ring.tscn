@@ -5,7 +5,7 @@
 [ext_resource type="Texture2D" path="res://resources/lighting/soft_light.tres" id="3_light"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_trigger"]
-size = Vector2(58.7, 28.5)
+size = Vector2(77, 41)
 
 [node name="TeleportRing" type="Area2D"]
 z_index = 1
@@ -20,11 +20,11 @@ animation = &"idle"
 autoplay = "idle"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, -45.4)
+position = Vector2(0, 46)
 shape = SubResource("RectangleShape2D_trigger")
 
 [node name="PointLight2D" type="PointLight2D" parent="."]
-position = Vector2(0, -45)
+position = Vector2(0, 46)
 scale = Vector2(2.25, 2.25)
 color = Color(0.35, 0.65, 1, 1)
 energy = 1.35

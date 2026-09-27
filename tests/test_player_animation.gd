@@ -202,8 +202,26 @@ func _run() -> void:
 	await _test_sprint("move_down", "下", Vector2.DOWN)
 	await _test_sprint_keeps_direction_change()
 
-	# ---------- 5. 动画不逐帧重启 ----------
-	print("\n[5] 动画切换只在变化时发生")
+	# ---------- 5. 场景落地输入重置 ----------
+	print("\n[5] 场景落地输入重置")
+	await _release_all()
+	await _hold("move_right")
+	_check("重置前按 D -> MoveState", _state() == &"MoveState", "实际 %s" % _state())
+	_player.reset_movement_input()
+	var reset_position := _player.global_position
+	for i in 5:
+		await physics_frame
+	_check("重置后仍按住 D -> IdleState", _state() == &"IdleState", "实际 %s" % _state())
+	_check("重置后速度归零", _player.velocity == Vector2.ZERO, "实际 %s" % _player.velocity)
+	_check("重置后持续按住 D 不移动", _player.global_position.is_equal_approx(reset_position),
+		"before=%s after=%s" % [reset_position, _player.global_position])
+	await _release_all()
+	await _hold("move_right")
+	_check("全部松开并重新按 D -> MoveState", _state() == &"MoveState", "实际 %s" % _state())
+	await _release_all()
+
+	# ---------- 6. 动画不逐帧重启 ----------
+	print("\n[6] 动画切换只在变化时发生")
 	await _hold("move_down", 5)
 	var frame_before := _sprite.frame
 	var anim_before := _anim()

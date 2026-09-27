@@ -64,6 +64,10 @@ func _run() -> void:
 	_check("城镇出生点位于传送圈上方 1 格",
 		town_marker.global_position.is_equal_approx(town_ring.global_position + Vector2(0, -64)),
 		"marker=%s ring=%s" % [town_marker.global_position, town_ring.global_position])
+	var ring_shape := town_ring.get_node_or_null("CollisionShape2D") as CollisionShape2D
+	_check("城镇传送圈触发区贴合地面动画",
+		ring_shape != null and ring_shape.position.y > 20.0,
+		"position=%s" % (ring_shape.position if ring_shape != null else Vector2.ZERO))
 	var obstacle_overlap := _ring_obstacle_overlap(
 		town_ring, town.get_node_or_null("World/TownMap/Obstacles") as TileMapLayer)
 	_check("城镇传送圈视觉范围不压石障", obstacle_overlap.is_empty(), obstacle_overlap)
@@ -71,6 +75,7 @@ func _run() -> void:
 	var requested := [false]
 	town_ring.teleport_requested.connect(func(_scene_path: String, _spawn: StringName) -> void:
 		requested[0] = true)
+	Input.action_press("move_down")
 	_check("玩家进入城镇传送圈后请求切换", town_ring.try_teleport(town_player))
 	_check("同一次进入不会重复请求", not town_ring.try_teleport(town_player))
 	_check("传送请求信号已发出", requested[0])
@@ -96,6 +101,25 @@ func _run() -> void:
 	_check("旱魃出生点位于传送圈上方 1 格",
 		hanba_marker.global_position.is_equal_approx(hanba_ring.global_position + Vector2(0, -64)),
 		"marker=%s ring=%s" % [hanba_marker.global_position, hanba_ring.global_position])
+
+	var hanba_spawn_position := hanba_player.global_position
+	for i in 90:
+		await physics_frame
+	var stayed_on_hanba := current_scene == hanba
+	_check("落地时持续按 S 不会立刻回传", stayed_on_hanba,
+		"current=%s" % (current_scene.scene_file_path if current_scene != null else "<null>"))
+	if not stayed_on_hanba:
+		_finish()
+		return
+	_check("落地时持续按 S 保持 IdleState",
+		hanba_player.state_machine.current_state.name == &"IdleState",
+		"state=%s" % hanba_player.state_machine.current_state.name)
+	_check("落地时持续按 S 不移动",
+		hanba_player.global_position.is_equal_approx(hanba_spawn_position),
+		"before=%s after=%s" % [hanba_spawn_position, hanba_player.global_position])
+	Input.action_release("move_down")
+	for i in 2:
+		await physics_frame
 
 	_check("玩家进入旱魃传送圈后请求返回", hanba_ring.try_teleport(hanba_player))
 	var returned_town := await _wait_for_scene(TOWN_SCENE)
@@ -141,5 +165,9 @@ func _ring_obstacle_overlap(ring: TeleportRing, obstacles: TileMapLayer) -> Stri
 
 
 func _finish() -> void:
+	Input.action_release("move_down")
+	Input.action_release("move_up")
+	Input.action_release("move_left")
+	Input.action_release("move_right")
 	print("\n=== 结果：%d 项检查，%d 项失败 ===" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)

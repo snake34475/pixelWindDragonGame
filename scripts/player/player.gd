@@ -43,6 +43,7 @@ var _normal_modulate := Color.WHITE
 var _last_tap_direction: Vector2 = Vector2.ZERO
 var _last_tap_time: float = -1.0
 var _pending_hook_target: Vector2 = Vector2.ZERO
+var _movement_release_required := false
 
 @onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var state_machine: StateMachine = $StateMachine
@@ -59,6 +60,11 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	if input_locked:
 		input_vector = Vector2.ZERO
+	elif _movement_release_required:
+		input_vector = Vector2.ZERO
+		is_sprinting = false
+		if _movement_actions_released():
+			_movement_release_required = false
 	else:
 		input_vector = Input.get_vector("move_left", "move_right", "move_up", "move_down")
 		_update_facing()
@@ -136,6 +142,18 @@ func current_speed() -> float:
 	return stats.run_speed if is_sprinting else stats.walk_speed
 
 
+## 场景落地后清空移动状态；玩家必须先松开全部移动键，再重新按下才会移动。
+func reset_movement_input() -> void:
+	input_vector = Vector2.ZERO
+	velocity = Vector2.ZERO
+	is_sprinting = false
+	_last_tap_direction = Vector2.ZERO
+	_last_tap_time = -1.0
+	_movement_release_required = true
+	if state_machine.current_state != null:
+		state_machine.change_state(&"IdleState")
+
+
 ## 按 "前缀_方向后缀" 播放动画。同名动画不重启，避免逐帧 restart。
 ## 目标动画不存在时查 ANIMATION_FALLBACK，仍然没有就退回 idle_down。
 func play_animation(prefix: String) -> void:
@@ -184,6 +202,13 @@ func _update_sprint() -> void:
 func _try_start_hook() -> void:
 	if Input.is_action_pressed("hook") and Input.is_action_just_pressed("hook_fire"):
 		start_hook(get_global_mouse_position())
+
+
+func _movement_actions_released() -> bool:
+	return not Input.is_action_pressed("move_up") \
+		and not Input.is_action_pressed("move_down") \
+		and not Input.is_action_pressed("move_left") \
+		and not Input.is_action_pressed("move_right")
 
 
 ## 本帧刚按下的方向键，多个同时按下时按 上/下/左/右 顺序取第一个。
