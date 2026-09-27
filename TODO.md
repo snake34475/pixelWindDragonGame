@@ -5,29 +5,28 @@
 
 ## 当前基线
 
-- `main`：Phase 0～4 已完成；Phase 4 为当前工作基线
+- `main`：Phase 0～5 已完成；Phase 5 为当前工作基线
 - 已验证：Godot 4.7.2 下 `test_player_animation.gd` 为 72/72 通过，
   `test_town_map.gd` 为 35/35 通过，`test_tile_destructor.gd` 为 15/15 通过，
-  `test_hook.gd` 为 24/24 通过。
+  `test_hook.gd` 为 24/24 通过，`test_teleport.gd` 为 25/25 通过。
 - 不修改 `unity-app`；仅通过 `git show unity-app:<路径>` 读取其历史实现。
 
-## 下一阶段：Phase 5 — 传送圈与多场景
+## 下一阶段：Phase 6 — NPC 与对话框
 
-- [ ] **5.1 传送素材**：导出 Unity 的 25 帧传送圈 PNG，建立 `SpriteFrames` 和
-  `scenes/effects/teleport_ring.tscn`。
-- [ ] **5.2 触发逻辑**：建立 `Area2D` 传送圈，导出目标场景路径和目标出生点名，
-  只检测玩家层，并防止一次进入重复请求切场景。
-- [ ] **5.3 出生点**：增加 `SpawnPointManager`，消费 `GameManager.consume_spawn_point()`，
-  按出生点名移动玩家；默认偏移目标传送圈上方 1 格。
-- [ ] **5.4 第二场景**：先建立最小可运行的 `hanba_map.tscn` 打通双向传送，再决定是否
-  扩展场景转换器还原完整旱魃地图；地图还原不得阻塞传送逻辑。
-- [ ] **5.5 验证**：增加双向传送与出生点无头测试，并回归 Phase 1～4。
+- [ ] **6.1 行为确认**：从 Unity 的 `npcMove.cs`、`npcdialog.cs` 和预制体确认游荡周期、
+  交互距离、对话时长和输入锁定范围。
+- [ ] **6.2 NPC 场景**：建立 NPC 场景与游荡状态，保留原逻辑的左右移动和定时换向。
+- [ ] **6.3 对话链路**：建立交互检测、`InteractState`、最小对话 UI，并在对话期间停住 NPC 与玩家。
+- [ ] **6.4 验证**：增加 NPC/对话无头测试，并回归 Phase 1～5。
 
 ## 后续迁移顺序
 
-- [ ] **Phase 6：NPC 与对话框**。实现交互检测、对话 UI 和最小 NPC 行为。
 - [ ] **Phase 7：水域表现**。将现有池塘 `Area2D` 接入玩家入水视觉，不把水域设为实体障碍。
 - [ ] **Phase 8：2D 光照与视觉打磨**。在玩法链路完成后再调。
+
+## 已知非阻塞项
+
+- [ ] 完整还原旱魃地图地形；当前 `hanba_map.tscn` 是最小可运行场景，不阻塞 Phase 6～8。
 
 ## 不在当前迁移范围
 

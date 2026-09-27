@@ -239,7 +239,7 @@ Y-sort 基准点 = **脚底**：`AnimatedSprite2D.offset = (0, -34.5)`（帧高 
 
 ### 测试
 
-四个 SceneTree 无头测试，退出码 `0` = 全部通过、`1` = 有失败项。
+五个 SceneTree 无头测试，退出码 `0` = 全部通过、`1` = 有失败项。
 
 本机 Godot 位于 `/Applications/Godot.app/Contents/MacOS/Godot`；若已将 Godot
 加入 `PATH`，可将下列命令中的完整路径替换为 `godot`。
@@ -270,6 +270,13 @@ Y-sort 基准点 = **脚底**：`AnimatedSprite2D.offset = (0, -34.5)`（帧高 
 
 ```bash
 /Applications/Godot.app/Contents/MacOS/Godot --headless --path . --script res://tests/test_hook.gd
+```
+
+**Phase 5 — 传送圈 / 多场景**（25 项）：25 帧传送圈资源、`teleport` 物理层、
+一次性切换保护、城镇与旱魃地图双向传送、目标出生点及传送圈上方 1 格偏移。
+
+```bash
+/Applications/Godot.app/Contents/MacOS/Godot --headless --path . --script res://tests/test_teleport.gd
 ```
 
 > 无头环境下 `Input.action_press` 需要至少 1 个物理帧才会被
@@ -318,15 +325,18 @@ Godot 场景按 `7 → 1` 播放。各帧保持原始尺寸与透明通道，在
 
 ### 开发进度
 
-Phase 4 基于 `014e6a3`（`feat: add stone tile destruction`）继续开发。2026-09-27 已用
+Phase 5 基于 `181a1c1`（`docs: plan phase 5 teleport`）继续开发。2026-09-27 已用
 Godot 4.7.2 重新验证：Phase 1 测试 72/72、Phase 2 测试 35/35、Phase 3 测试 15/15、
-Phase 4 测试 24/24，均通过。
+Phase 4 测试 24/24、Phase 5 测试 25/25，均通过。
 
 - ✅ **Phase 0**：Godot 基础骨架（项目配置、Input Map、物理层、目录结构、GameManager、town 空场景、Player 骨架 + Idle/Move 状态机、素材整理）
 - ✅ **Phase 1**：玩家移动与动画（四向 facing、`AnimatedSprite2D` + 5 组真实动画帧、walk/run、双击加速、`Camera2D` 平滑跟随 + limit、左右 `flip_h`）
 - ✅ **Phase 2**：瓦片世界 + 碰撞（Unity 地形/道具脚本还原 → `town_map.tscn`、TileSet + TileMapLayer、Y-sort 遮挡、障碍与道具碰撞、池塘 Area2D）
 - ✅ **Phase 3**：石头破坏（Q）（前方格检测、Tile 与碰撞清除、7 帧碎石动画、自动回收；15 项无头测试）
 - ✅ **Phase 4**：飞钩 / 钩爪（E + 左键）（鼠标世界坐标、`eaves` 物理层命中、信号驱动 `HookThrowState` / `HookPullState`、拉拽期间移动锁定；24 项无头测试）
+- ✅ **Phase 5**：传送圈与多场景（25 帧动画、`Area2D` 触发、一次性出生点、城镇 ↔ 旱魃地图双向切换；25 项无头测试）
+
+当前 `hanba_map.tscn` 是最小可运行场景，只交付传送闭环；完整旱魃地形还原不阻塞后续玩法迁移。
 
 下一步与阻塞项见 [TODO.md](TODO.md)。完整迁移设计与 Unity 侧证据见 `MIGRATION_PLAN.md`；已完成阶段的实施复盘放在 `.trae/documents/`。
 

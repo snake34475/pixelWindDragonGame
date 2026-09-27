@@ -1,0 +1,41 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/characters/player.tscn" id="1_player"]
+[ext_resource type="Script" path="res://scripts/world/spawn_point_manager.gd" id="2_spawn_manager"]
+[ext_resource type="PackedScene" path="res://scenes/effects/teleport_ring.tscn" id="3_teleport_ring"]
+
+[node name="HanbaMap" type="Node2D"]
+
+[node name="Background" type="ColorRect" parent="."]
+z_index = -100
+offset_left = -960.0
+offset_top = -540.0
+offset_right = 960.0
+offset_bottom = 540.0
+mouse_filter = 2
+color = Color(0.105, 0.102, 0.125, 1)
+
+[node name="World" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="Entities" type="Node2D" parent="World"]
+y_sort_enabled = true
+
+[node name="Player" parent="World/Entities" instance=ExtResource("1_player")]
+position = Vector2(0, -160)
+
+[node name="SpawnPoints" type="Node2D" parent="World"]
+script = ExtResource("2_spawn_manager")
+player_path = NodePath("../Entities/Player")
+
+[node name="hanba_arrival" type="Marker2D" parent="World/SpawnPoints"]
+position = Vector2(0, -64)
+
+[node name="TeleportRing" parent="World" instance=ExtResource("3_teleport_ring")]
+target_scene_path = "res://scenes/levels/town.tscn"
+target_spawn_point = &"town_arrival"
+
+[node name="Lighting" type="CanvasModulate" parent="."]
+color = Color(0.72, 0.72, 0.78, 1)
+
+[node name="UI" type="CanvasLayer" parent="."]
