@@ -17,11 +17,13 @@ script = ExtResource("1_player")
 stats = ExtResource("2_stats")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+offset = Vector2(0, -34.5)
 sprite_frames = ExtResource("3_frames")
 animation = &"idle_down"
 autoplay = "idle_down"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -16)
 shape = SubResource("RectangleShape2D_body")
 
 [node name="Camera2D" type="Camera2D" parent="."]
@@ -33,10 +35,10 @@ drag_left_margin = 0.1
 drag_top_margin = 0.1
 drag_right_margin = 0.1
 drag_bottom_margin = 0.1
-limit_left = -960
-limit_top = -540
-limit_right = 960
-limit_bottom = 540
+limit_left = -1856
+limit_top = -1280
+limit_right = 2112
+limit_bottom = 640
 
 [node name="StateMachine" type="Node" parent="."]
 script = ExtResource("4_machine")

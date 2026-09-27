@@ -52,9 +52,8 @@ assets/                     美术素材（从 unity-app 整理而来，见下�
 scenes/
 ├── characters/             player.tscn
 ├── items/                  （待 Phase 3/4）
-├── levels/                 town.tscn
+├── levels/                 town.tscn、town_map.tscn（生成物）
 ├── effects/                （待 Phase 3/4）
-├── world/                  （待 Phase 2）
 └── ui/                     （待 Phase 5）
 
 scripts/
@@ -65,10 +64,17 @@ scripts/
 
 resources/
 ├── characters/             player_stats.tres、player_sprite_frames.tres
-└── world/                  （待后续 Phase）
+└── world/                  town_map.json（中间数据）、town_tileset.tres（生成物）
 
-tests/                      无头测试（SceneTree 脚本，退出码 0 = 通过）
-└── test_player_animation.gd
+tools/                       开发期脚本（解析 Unity / 生成 Godot 资源）
+├── convert_unity_scene.py   解析 unity-app 的 SampleScene → town_map.json
+├── build_town_map.gd        由 town_map.json 生成 TileSet 与 town_map.tscn
+├── build_town_map.sh        三步跑法（写打包图集 → --import → 建资源）
+└── render_town_preview.gd   无头渲染预览图，供目视验收
+
+tests/                       无头测试（SceneTree 脚本，退出码 0 = 通过）
+├── test_player_animation.gd
+└── test_town_map.gd
 ```
 
 ### 操作（Input Map）
@@ -162,22 +168,92 @@ Player (CharacterBody2D)
 
 - `position_smoothing_enabled = true`，`position_smoothing_speed = 8`
 - `drag_horizontal_enabled` / `drag_vertical_enabled = true`，margin `0.1`
-- `limit_left / top / right / bottom = -960 / -540 / 960 / 540`
+- `limit_left / top / right / bottom = -1856 / -1280 / 2112 / 640`
 
-> **TODO（Phase 2）**：上面 4 个 limit 只是当前 `town.tscn` 的测试范围（背景
-> `ColorRect` 的 ±960 × ±540），**不是最终地图尺寸**。等 Tilemap 迁移完成、
-> 地图真实大小确定后，按世界边界重新设置。
+> Phase 2 完成后按真实地图边界设置：地形格 `gx ∈ [-29, 32]`、`gy ∈ [-20, 9]`，
+> 格 64px → 世界 `x ∈ [-1856, 2112]`、`y ∈ [-1280, 640]`。
+
+### 瓦片世界（Phase 2）
+
+地形与道具**由脚本从 Unity 场景还原**，不手工重画。数据流：
+
+```
+unity-app:Assets/Scenes/SampleScene.unity
+        │  tools/convert_unity_scene.py        （解析 Unity YAML）
+        ▼
+resources/world/town_map.json                 （中间数据，可人工核对）
+        │  tools/build_town_map.gd             （生成 Godot 资源）
+        ▼
+resources/world/town_tileset.tres  +  scenes/levels/town_map.tscn
+        │
+        ▼  scenes/levels/town.tscn 实例化 TownMap
+```
+
+重新生成（幂等）：
+
+```bash
+python3 tools/convert_unity_scene.py     # 需要能 git show unity-app 分支
+./tools/build_town_map.sh                # 写打包图集 → --import → 建资源
+```
+
+目视验收（不需要窗口，直接渲染一张 PNG）：
+
+```bash
+godot --headless --path . --script res://tools/render_town_preview.gd -- /tmp/town_preview.png
+```
+
+坐标约定（`convert_unity_scene.py` 头部也有同样说明）：
+
+- Unity y 轴向上、Godot y 轴向下 → `godot_y = -unity_y`
+- 1 Unity 单位 = 1 格 = `spritePixelsToUnits` = **64px**
+- 格 `(ux, uy)` 中心在 Unity `(ux+0.5, uy+0.5)` → Godot 格 `(gx, gy) = (ux, -uy - 1)`
+- 图集 rect 的 y 自下而上 → `godot_atlas_y = atlas_h - rect.y - rect.h`
+
+实测结果：地面 1546 格、障碍 118 格、道具 14 个、池塘区域 1 个；
+格范围 `gx ∈ [-29, 32]`、`gy ∈ [-20, 9]`。
+
+场景结构与碰撞：
+
+| 节点 | 类型 | 说明 |
+| --- | --- | --- |
+| `World` | Node2D | `y_sort_enabled = true` |
+| `World/TownMap/Ground` | TileMapLayer | `collision_enabled = false`，`z_index = -2` |
+| `World/TownMap/Obstacles` | TileMapLayer | `collision_enabled = true`，物理层 0 = **1 world**，`z_index = -1` |
+| `World/TownMap/Props` | Node2D | 每个道具一个 `StaticBody2D` + `Sprite2D` + `CollisionShape2D` |
+| `World/TownMap/Zones` | Node2D | 池塘 = `Area2D`，层 **7 pond**（不阻挡玩家） |
+| `World/Entities/Player` | CharacterBody2D | 与 Props 同一 Y-sort 层级 |
+
+道具碰撞层：树木 / 朱门 = **1 world**，屋檐 = **1 world + 4 eaves**，池塘 = **7 pond**。
+玩家 `collision_mask = 1`，所以树木/朱门/屋檐会挡住玩家，池塘不会。
+
+Y-sort 基准点 = **脚底**：`AnimatedSprite2D.offset = (0, -34.5)`（帧高 81、靴底 y=75）、
+`CollisionShape2D.position = (0, -16)`。`World`、`TownMap`、`Props`、`Zones`、`Entities`
+都必须开 `y_sort_enabled`，Godot 会把嵌套的 Y-sort 子树摊平到同一排序里。
+
+两点实现注意（踩过的坑）：
+
+- Unity 图集切片不在 64 网格上（如 `y=224`），无法直接当 `TileSetAtlasSource` 用；
+  `build_town_map.gd` 会把用到的切片**重新打包**成规整图集 `town_tiles.png`（每格 64px、8 列）。
+- `PackedScene.pack()` 会**忽略 `owner` 未指向根节点的子节点**，所以生成器最后要显式
+  递归指派 `owner`，否则保存出来的场景只有根节点。
 
 ### 测试
 
-无头运行，验证场景加载、5 个动画的帧数/尺寸/FPS、四方向移动、停止切回 Idle、
-双击奔跑、左右 `flip_h`、以及动画不逐帧重启：
+两个 SceneTree 无头测试，退出码 `0` = 全部通过、`1` = 有失败项。
+
+**Phase 1 — 玩家动画**（72 项）：场景加载、5 个动画的帧数/尺寸/FPS、四方向移动、
+停止切回 Idle、双击奔跑、左右 `flip_h`、动画不逐帧重启。
 
 ```bash
 godot --headless --path . --script res://tests/test_player_animation.gd
 ```
 
-退出码 `0` = 全部通过，`1` = 有失败项。当前 72 项检查全部通过。
+**Phase 2 — 瓦片世界**（35 项）：场景结构、`y_sort_enabled`、地面/障碍格数与 atlas 坐标、
+障碍碰撞层与物理多边形、空间点查询、道具与池塘区域、玩家被障碍挡住。
+
+```bash
+godot --headless --path . --script res://tests/test_town_map.gd
+```
 
 > 无头环境下 `Input.action_press` 需要至少 1 个物理帧才会被
 > `is_action_just_pressed` 观察到，所以测试里的"轻点"要按住 2～3 帧；
@@ -222,7 +298,8 @@ godot --headless --path . --script res://tests/test_player_animation.gd
 
 - ✅ **Phase 0**：Godot 基础骨架（项目配置、Input Map、物理层、目录结构、GameManager、town 空场景、Player 骨架 + Idle/Move 状态机、素材整理）
 - ✅ **Phase 1**：玩家移动与动画（四向 facing、`AnimatedSprite2D` + 5 组真实动画帧、walk/run、双击加速、`Camera2D` 平滑跟随 + limit、左右 `flip_h`）
-- ⏭ **Phase 2**：瓦片世界 + 碰撞（Tilemap / TileSet，需先转换 Unity 地形数据）
+- ✅ **Phase 2**：瓦片世界 + 碰撞（Unity 地形/道具脚本还原 → `town_map.tscn`、TileSet + TileMapLayer、Y-sort 遮挡、障碍与道具碰撞、池塘 Area2D）
+- ⏭ **Phase 3**：石头破坏（Q）
 
 完整规划见 `MIGRATION_PLAN.md`。
 
