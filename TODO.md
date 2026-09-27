@@ -13,7 +13,7 @@
 
 - `main`：Phase 0～8 已完成；原 Unity 原型迁移队列已完成
 - 已验证：Godot 4.7.2 下 `test_player_animation.gd` 为 72/72 通过，
-  `test_town_map.gd` 为 35/35 通过，`test_tile_destructor.gd` 为 15/15 通过，
+  `test_town_map.gd` 为 36/36 通过，`test_tile_destructor.gd` 为 15/15 通过，
   `test_hook.gd` 为 24/24 通过，`test_teleport.gd` 为 25/25 通过，
   `test_npc.gd` 为 23/23 通过，`test_water.gd` 为 11/11 通过，
   `test_lighting.gd` 为 16/16 通过。

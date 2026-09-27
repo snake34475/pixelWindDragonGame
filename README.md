@@ -22,16 +22,16 @@
 
 | 项 | 值 |
 | --- | --- |
-| 引擎 | Godot 4.4 或更高（`project.godot` 声明 `config/features = ("4.4", "GL Compatibility")`） |
+| 引擎 | Godot 4.7.x；当前在 `4.7.2` 完成全量验证（`config/features = ("4.7", "GL Compatibility")`） |
 | 渲染后端 | `gl_compatibility` |
 | 基准分辨率 | 640 × 360，窗口 1280 × 720 |
 | 拉伸 | `canvas_items` + `keep` 宽高比 + `integer` 缩放（像素对齐） |
 | 纹理过滤 | Nearest（`default_texture_filter = 0`） |
-| 瓦片尺寸 | 32 px（由 `assets/environment/tiles/` 素材实测反推） |
+| 瓦片尺寸 | 64 px（石障源图为 32 px，接入时按 ×2 缩放） |
 
 > **macOS 12 用户注意**：Godot 4.7.x 链接了 `MetalFX.framework`，在 macOS 12 上会
-> `dyld: Library not loaded` 直接启动失败。若本机是 macOS 12，请使用 Godot 4.4.x；
-> 或升级到 macOS 13+ 后再使用 4.7。
+> `dyld: Library not loaded` 直接启动失败。使用 macOS 12 时不要直接用 4.4 打开当前
+> 4.7 工程；应切换到 4.4 兼容提交，或升级到 macOS 13+ 后再运行。
 
 用 Godot 打开本目录（选择 `project.godot`），按 F5 运行主场景。
 
@@ -40,41 +40,53 @@
 ```
 assets/                     美术素材（从 unity-app 整理而来，见下文）
 ├── characters/dragon/      龙人动画帧：idle / walk_down / walk_up / walk_side / run
-├── characters/npc/         佟湘玉立绘
+├── characters/npc/         佟湘玉精灵表
 ├── enemies/hanba/          旱魃 启动/未启动
-├── items/                  钩爪 / 锁链 / 飞镖
 ├── environment/tiles/      地面素材、九宫格过渡块、石障
 ├── environment/props/      树木 / 屋檐 / 朱门 / 池塘
-├── effects/fire/           红焰 120 帧
-├── effects/teleport/       传送圈 25 帧
+├── effects/fire/           红焰 120 帧 → fire_frames.tres
+├── effects/hook/           飞镖 / 锁链
+├── effects/stone_break/    碎石 7 帧
+├── effects/teleport/       传送圈 25 帧 → teleport_frames.tres
 └── ui/                     故事对话框
 
 scenes/
-├── characters/             player.tscn
-├── items/                  （待 Phase 3/4）
-├── levels/                 town.tscn、town_map.tscn（生成物）
-├── effects/                （待 Phase 3/4）
-└── ui/                     （待 Phase 5）
+├── characters/             player.tscn、npc.tscn
+├── effects/                hook.tscn、stone_break.tscn、teleport_ring.tscn、fire.tscn
+├── levels/                 town.tscn、town_map.tscn、hanba_map.tscn
+└── ui/                     npc_dialog.tscn
 
 scripts/
 ├── player/                 player.gd、state_machine.gd、state.gd、states/
-├── npc/ items/ world/ ui/  （待后续 Phase）
+├── npc/                    npc.gd、npc_interactor.gd
+├── ui/                     npc_dialog.gd
+├── world/                  tile_destructor.gd、teleport_ring.gd、spawn_point_manager.gd、water_zone.gd
 ├── data/                   player_stats_data.gd
 └── systems/                game_manager.gd（Autoload）
 
 resources/
-├── characters/             player_stats.tres、player_sprite_frames.tres
+├── characters/             player / npc 的 stats 与 SpriteFrames
+├── effects/                fire_frames.tres、teleport_frames.tres
+├── lighting/               soft_light.tres
 └── world/                  town_map.json（中间数据）、town_tileset.tres（生成物）
 
 tools/                       开发期脚本（解析 Unity / 生成 Godot 资源）
 ├── convert_unity_scene.py   解析 unity-app 的 SampleScene → town_map.json
 ├── build_town_map.gd        由 town_map.json 生成 TileSet 与 town_map.tscn
 ├── build_town_map.sh        三步跑法（写打包图集 → --import → 建资源）
+├── build_fire_frames.gd     由 120 张火焰 PNG 生成 SpriteFrames
+├── run_tests.sh             顺序运行全部八组无头测试
 └── render_town_preview.gd   无头渲染预览图，供目视验收
 
 tests/                       无头测试（SceneTree 脚本，退出码 0 = 通过）
 ├── test_player_animation.gd
-└── test_town_map.gd
+├── test_town_map.gd
+├── test_tile_destructor.gd
+├── test_hook.gd
+├── test_teleport.gd
+├── test_npc.gd
+├── test_water.gd
+└── test_lighting.gd
 ```
 
 ### 当前玩家操作
@@ -250,7 +262,7 @@ Y-sort 基准点 = **脚底**：`AnimatedSprite2D.offset = (0, -34.5)`（帧高 
 /Applications/Godot.app/Contents/MacOS/Godot --headless --path . --script res://tests/test_player_animation.gd
 ```
 
-**Phase 2 — 瓦片世界**（35 项）：场景结构、`y_sort_enabled`、地面/障碍格数与 atlas 坐标、
+**Phase 2 — 瓦片世界**（36 项）：场景结构、`y_sort_enabled`、地面/障碍格数与 atlas 坐标、
 障碍碰撞层与物理多边形、空间点查询、道具与池塘区域、玩家被障碍挡住。
 
 ```bash
@@ -297,6 +309,12 @@ Y-sort 基准点 = **脚底**：`AnimatedSprite2D.offset = (0, -34.5)`（帧高 
 
 ```bash
 /Applications/Godot.app/Contents/MacOS/Godot --headless --path . --script res://tests/test_lighting.gd
+```
+
+也可以一次顺序运行全部测试：
+
+```bash
+tools/run_tests.sh
 ```
 
 > 无头环境下 `Input.action_press` 需要至少 1 个物理帧才会被
