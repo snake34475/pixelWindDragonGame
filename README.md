@@ -86,9 +86,9 @@ tests/                       无头测试（SceneTree 脚本，退出码 0 = 通
 | 炸石 | `Q` | 清除玩家朝向前方的石障并播放碎石特效；目标不是石障时无效果 |
 | 钩爪 | 按住 `E`，再点击鼠标左键 | 朝鼠标世界坐标发射飞钩；命中 `eaves` 后把玩家拉向命中点，未命中或超程时回收 |
 | 传送 | 走进传送圈 | 在城镇与旱魃地图之间切换，并落到目标出生点 |
-| NPC 交互 | `C` | Action 已配置，但 NPC 与对话框尚未实现，当前没有效果 |
+| NPC 交互 | 朝向 NPC 按 `C` | 弹出 NPC 对话框；3 秒后自动关闭，期间玩家与 NPC 停止行动 |
 
-当前未实现：战斗、技能、装备、掉落、背包、存档、NPC 对话和入水表现。
+当前未实现：战斗、技能、装备、掉落、背包、存档和入水表现。
 这些能力不会因为按键已存在就视为可玩功能。
 
 ### 物理层（Project Settings → Layer Names → 2D Physics）
@@ -237,7 +237,7 @@ Y-sort 基准点 = **脚底**：`AnimatedSprite2D.offset = (0, -34.5)`（帧高 
 
 ### 测试
 
-五个 SceneTree 无头测试，退出码 `0` = 全部通过、`1` = 有失败项。
+六个 SceneTree 无头测试，退出码 `0` = 全部通过、`1` = 有失败项。
 
 本机 Godot 位于 `/Applications/Godot.app/Contents/MacOS/Godot`；若已将 Godot
 加入 `PATH`，可将下列命令中的完整路径替换为 `godot`。
@@ -275,6 +275,13 @@ Y-sort 基准点 = **脚底**：`AnimatedSprite2D.offset = (0, -34.5)`（帧高 
 
 ```bash
 /Applications/Godot.app/Contents/MacOS/Godot --headless --path . --script res://tests/test_teleport.gd
+```
+
+**Phase 6 — NPC / 对话框**（23 项）：NPC 水平游荡与 5 秒换向、`C` 射线交互、
+`InteractState` 输入锁定、说话人和文本显示、3 秒关闭及状态恢复。
+
+```bash
+/Applications/Godot.app/Contents/MacOS/Godot --headless --path . --script res://tests/test_npc.gd
 ```
 
 > 无头环境下 `Input.action_press` 需要至少 1 个物理帧才会被
@@ -323,9 +330,9 @@ Godot 场景按 `7 → 1` 播放。各帧保持原始尺寸与透明通道，在
 
 ### 开发进度
 
-Phase 5 基于 `181a1c1`（`docs: plan phase 5 teleport`）继续开发。2026-09-27 已用
+Phase 6 基于 `d7bf51d`（`chore: declare Godot 4.7 and document controls`）继续开发。2026-09-27 已用
 Godot 4.7.2 重新验证：Phase 1 测试 72/72、Phase 2 测试 35/35、Phase 3 测试 15/15、
-Phase 4 测试 24/24、Phase 5 测试 25/25，均通过。
+Phase 4 测试 24/24、Phase 5 测试 25/25、Phase 6 测试 23/23，均通过。
 
 - ✅ **Phase 0**：Godot 基础骨架（项目配置、Input Map、物理层、目录结构、GameManager、town 空场景、Player 骨架 + Idle/Move 状态机、素材整理）
 - ✅ **Phase 1**：玩家移动与动画（四向 facing、`AnimatedSprite2D` + 5 组真实动画帧、walk/run、双击加速、`Camera2D` 平滑跟随 + limit、左右 `flip_h`）
@@ -333,6 +340,7 @@ Phase 4 测试 24/24、Phase 5 测试 25/25，均通过。
 - ✅ **Phase 3**：石头破坏（Q）（前方格检测、Tile 与碰撞清除、7 帧碎石动画、自动回收；15 项无头测试）
 - ✅ **Phase 4**：飞钩 / 钩爪（E + 左键）（鼠标世界坐标、`eaves` 物理层命中、信号驱动 `HookThrowState` / `HookPullState`、拉拽期间移动锁定；24 项无头测试）
 - ✅ **Phase 5**：传送圈与多场景（25 帧动画、`Area2D` 触发、一次性出生点、城镇 ↔ 旱魃地图双向切换；25 项无头测试）
+- ✅ **Phase 6**：NPC 与对话框（佟湘玉水平游荡、5 秒换向、`C` 射线交互、玩家输入锁定、3 秒自动关闭；23 项无头测试）
 
 当前 `hanba_map.tscn` 是最小可运行场景，只交付传送闭环；完整旱魃地形还原不阻塞后续玩法迁移。
 

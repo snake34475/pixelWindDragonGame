@@ -1,0 +1,46 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/npc_dialog.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/ui/逗仙全套UI-故事对话框(StoryDialog)_爱给网_aigei_com.png" id="2_panel"]
+
+[node name="NpcDialog" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+visible = false
+script = ExtResource("1_script")
+
+[node name="Panel" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 80.0
+offset_top = 250.0
+offset_right = 560.0
+offset_bottom = 340.0
+mouse_filter = 2
+texture = ExtResource("2_panel")
+expand_mode = 1
+stretch_mode = 1
+
+[node name="Speaker" type="Label" parent="Panel"]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 8.0
+offset_right = 180.0
+offset_bottom = 34.0
+theme_override_colors/font_color = Color(0.29, 0.13, 0.04, 1)
+text = "佟湘玉"
+
+[node name="Text" type="RichTextLabel" parent="Panel"]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 38.0
+offset_right = 456.0
+offset_bottom = 82.0
+mouse_filter = 2
+theme_override_colors/default_color = Color(0.2, 0.1, 0.03, 1)
+bbcode_enabled = false
+text = "欢迎来到七侠镇。"

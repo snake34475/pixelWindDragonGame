@@ -1,10 +1,13 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/characters/player.tscn" id="1_player"]
 [ext_resource type="PackedScene" path="res://scenes/levels/town_map.tscn" id="2_town_map"]
 [ext_resource type="Script" path="res://scripts/world/tile_destructor.gd" id="3_destructor"]
 [ext_resource type="Script" path="res://scripts/world/spawn_point_manager.gd" id="4_spawn_manager"]
 [ext_resource type="PackedScene" path="res://scenes/effects/teleport_ring.tscn" id="5_teleport_ring"]
+[ext_resource type="PackedScene" path="res://scenes/characters/npc.tscn" id="6_npc"]
+[ext_resource type="Script" path="res://scripts/npc/npc_interactor.gd" id="7_interactor"]
+[ext_resource type="PackedScene" path="res://scenes/ui/npc_dialog.tscn" id="8_dialog"]
 
 [node name="Town" type="Node2D"]
 
@@ -27,6 +30,9 @@ y_sort_enabled = true
 
 [node name="Player" parent="World/Entities" instance=ExtResource("1_player")]
 
+[node name="Npc" parent="World/Entities" instance=ExtResource("6_npc")]
+position = Vector2(-173.6329, 115.3093)
+
 [node name="TileDestructor" type="Node" parent="World"]
 script = ExtResource("3_destructor")
 player_path = NodePath("../Entities/Player")
@@ -44,6 +50,13 @@ position = Vector2(1772.288, 213.12)
 target_scene_path = "res://scenes/levels/hanba_map.tscn"
 target_spawn_point = &"hanba_arrival"
 
+[node name="NpcInteractor" type="Node" parent="World"]
+script = ExtResource("7_interactor")
+player_path = NodePath("../Entities/Player")
+dialog_path = NodePath("../../UI/NpcDialog")
+
 [node name="Lighting" type="CanvasModulate" parent="."]
 
 [node name="UI" type="CanvasLayer" parent="."]
+
+[node name="NpcDialog" parent="UI" instance=ExtResource("8_dialog")]

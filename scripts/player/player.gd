@@ -33,6 +33,8 @@ var is_sprinting: bool = false
 ## 当前飞钩和拉拽目标；钩爪状态通过这两个节点外字段交接。
 var active_hook: Hook
 var hook_anchor: Vector2 = Vector2.ZERO
+var active_npc: Npc
+var input_locked := false
 
 var _last_tap_direction: Vector2 = Vector2.ZERO
 var _last_tap_time: float = -1.0
@@ -50,9 +52,12 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	input_vector = Input.get_vector("move_left", "move_right", "move_up", "move_down")
-	_update_facing()
-	_update_sprint()
+	if input_locked:
+		input_vector = Vector2.ZERO
+	else:
+		input_vector = Input.get_vector("move_left", "move_right", "move_up", "move_down")
+		_update_facing()
+		_update_sprint()
 	_try_start_hook()
 	state_machine.physics_update(delta)
 	if velocity != Vector2.ZERO:
@@ -77,6 +82,28 @@ func can_start_hook() -> bool:
 
 func take_pending_hook_target() -> Vector2:
 	return _pending_hook_target
+
+
+## 进入 NPC 对话状态；只有 Idle/Move 且没有其他交互时可以开始。
+func start_interaction(npc: Npc) -> bool:
+	if not can_start_interaction():
+		return false
+	active_npc = npc
+	state_machine.change_state(&"InteractState")
+	return true
+
+
+func can_start_interaction() -> bool:
+	if input_locked or active_hook != null or active_npc != null or state_machine.current_state == null:
+		return false
+	return state_machine.current_state.name in [&"IdleState", &"MoveState"]
+
+
+## 对话关闭后恢复普通状态，由交互协调器调用。
+func finish_interaction() -> void:
+	active_npc = null
+	if state_machine.current_state != null and state_machine.current_state.name == &"InteractState":
+		state_machine.change_state(&"IdleState")
 
 
 ## 当前移动速度：加速中走 run_speed，否则 walk_speed。
